@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Plus, Save, Trash2 } from "lucide-react";
 
+import { BodyPreview } from "@/components/forms/body-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,27 +62,6 @@ const emptyTemplate = {
   body: "",
   fields: [] as TemplateField[],
 };
-
-/** Renders the body with {{tokens}} highlighted. */
-function BodyPreview({ body }: { body: string }) {
-  const parts = body.split(/(\{\{[^}]+\}\})/g);
-  return (
-    <pre className="min-h-64 rounded-lg border bg-muted/30 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap">
-      {parts.map((part, i) =>
-        part.startsWith("{{") ? (
-          <span
-            key={i}
-            className="rounded bg-primary/10 px-1 py-0.5 font-medium text-primary"
-          >
-            {part}
-          </span>
-        ) : (
-          <React.Fragment key={i}>{part}</React.Fragment>
-        )
-      )}
-    </pre>
-  );
-}
 
 export function TemplateEditor({ template }: { template?: DocumentTemplate }) {
   const initial = template ?? emptyTemplate;

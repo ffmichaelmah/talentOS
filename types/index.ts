@@ -304,6 +304,8 @@ export interface SubscriptionPlan {
   includedCredits: number;
   features: string[];
   limits: PlanLimits;
+  /** Access to contract legal review / advice features. */
+  hasLegalReview: boolean;
   /** Marketing flag for the "most popular" treatment on pricing pages. */
   highlighted: boolean;
   cta: string;

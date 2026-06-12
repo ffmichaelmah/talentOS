@@ -21,18 +21,19 @@ export interface NavItem {
 }
 
 export const dashboardNav: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Bookings", href: "/bookings", icon: Calendar },
-  { label: "Clients", href: "/clients", icon: Users },
-  { label: "Invoices", href: "/invoices", icon: Receipt },
-  { label: "Contracts", href: "/contracts", icon: FileSignature },
-  { label: "Advancing", href: "/advancing", icon: ClipboardList },
-  { label: "Credits", href: "/credits", icon: Coins },
+  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Invoices", href: "/dashboard/invoices", icon: Receipt },
+  { label: "Contracts", href: "/dashboard/contracts", icon: FileSignature },
+  { label: "Advancing", href: "/dashboard/advancing", icon: ClipboardList },
+  { label: "Clients", href: "/dashboard/clients", icon: Users },
+  { label: "Bookings", href: "/dashboard/bookings", icon: Calendar },
+  { label: "Credits", href: "/dashboard/credits", icon: Coins },
+  { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export const dashboardSecondaryNav: NavItem[] = [
   { label: "Admin", href: "/admin", icon: ShieldCheck },
-  { label: "Settings", href: "/settings", icon: Settings },
 ];
 
 export const adminNav: NavItem[] = [
@@ -47,6 +48,7 @@ export const adminSecondaryNav: NavItem[] = [
 ];
 
 export const marketingNav = [
-  { label: "Features", href: "/#features" },
+  { label: "Features", href: "/features" },
+  { label: "Templates", href: "/templates" },
   { label: "Pricing", href: "/pricing" },
 ];

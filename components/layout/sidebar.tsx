@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { CreditMeter } from "@/components/cards/credit-meter";
 import { Logo } from "@/components/layout/logo";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,6 +14,7 @@ import {
   type NavItem,
 } from "@/lib/navigation";
 import { currentUser } from "@/data";
+import { getCurrentPlan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
 // Nav configs contain icon components, which can't cross the server→client
@@ -56,8 +58,9 @@ export function Sidebar({ variant = "app" }: { variant?: "app" | "admin" }) {
   const { nav, secondaryNav, homeHref, badge, showCredits } =
     variants[variant];
   const pathname = usePathname();
+  const plan = getCurrentPlan();
   // The section home ("/admin", "/dashboard") only matches exactly, so it
-  // doesn't stay highlighted while a sibling like "/admin/templates" is open.
+  // doesn't stay highlighted while a sibling like "/dashboard/invoices" is open.
   const isActive = (href: string) =>
     href === homeHref
       ? pathname === href
@@ -73,13 +76,23 @@ export function Sidebar({ variant = "app" }: { variant?: "app" | "admin" }) {
         {nav.map((item) => (
           <NavLink key={item.href} item={item} active={isActive(item.href)} />
         ))}
-        <div className="mt-auto space-y-1 pt-4">
+        <div className="mt-auto space-y-2 pt-4">
           {showCredits ? (
-            <div className="flex items-center justify-between rounded-lg border bg-card px-3 py-2.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                Credits
-              </span>
-              <Badge variant="secondary">{currentUser.creditBalance}</Badge>
+            <div className="space-y-3 rounded-xl border bg-card p-3.5">
+              <CreditMeter
+                balance={currentUser.creditBalance}
+                included={plan.includedCredits}
+                compact
+              />
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary">{plan.name} plan</Badge>
+                <Link
+                  href="/dashboard/billing"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  Upgrade
+                </Link>
+              </div>
             </div>
           ) : null}
           {secondaryNav.map((item) => (

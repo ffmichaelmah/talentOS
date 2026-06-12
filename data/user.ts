@@ -10,7 +10,7 @@ export const currentUser: User = {
   businessName: "Nova Sounds LLC",
   location: "Los Angeles, CA",
   currency: "USD",
-  creditBalance: 42,
-  planId: "plan-pro",
+  creditBalance: 2,
+  planId: "plan-free",
   createdAt: "2025-09-12T18:24:00Z",
 };
