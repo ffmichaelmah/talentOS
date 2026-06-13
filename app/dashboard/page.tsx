@@ -78,7 +78,7 @@ export default function DashboardOverviewPage() {
     <>
       <PageHeader
         title="Overview"
-        description="A quick look at your bookings, money, and documents."
+        description="Here's where your talent business stands today — bookings, money, and documents in one place."
       />
 
       {/* Stat cards */}

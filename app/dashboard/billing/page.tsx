@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BadgeCheck, Check, CreditCard } from "lucide-react";
+import { BadgeCheck, Check, CreditCard, Receipt } from "lucide-react";
 
 import { EmptyStateCard } from "@/components/cards/empty-state-card";
 import { PageHeader } from "@/components/layout/page-header";
@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { subscriptionPlans } from "@/data";
+import { formatDate } from "@/lib/format";
 import { getCurrentPlan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
@@ -20,8 +21,14 @@ export const metadata: Metadata = {
   title: "Billing",
 };
 
+function priceLabel(monthly: number): string {
+  return monthly === 0 ? "Free forever" : `$${monthly}/month`;
+}
+
 export default function BillingPage() {
   const currentPlan = getCurrentPlan();
+  const now = new Date();
+  const renewal = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
   return (
     <>
@@ -30,65 +37,79 @@ export default function BillingPage() {
         description="Your plan, payment method, and invoices for TalentOS itself."
       />
 
+      {/* Current subscription */}
       <Card className="shadow-xs">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BadgeCheck className="size-4 text-primary" />
-            Current plan
+            Current subscription
           </CardTitle>
           <CardDescription>{currentPlan.tagline}</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-wrap items-center justify-between gap-4">
+        <CardContent className="grid gap-5 sm:grid-cols-4">
           <div>
-            <p className="text-2xl font-semibold tracking-tight">
+            <p className="text-xs text-muted-foreground">Plan</p>
+            <p className="mt-0.5 text-lg font-semibold tracking-tight">
               {currentPlan.name}
-              <span className="ml-2 text-base font-normal text-muted-foreground">
-                {currentPlan.monthlyPrice === 0
-                  ? "Free forever"
-                  : `$${currentPlan.monthlyPrice}/month`}
-              </span>
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {currentPlan.includedCredits} credits included each month.
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Monthly price</p>
+            <p className="mt-0.5 text-lg font-semibold tracking-tight">
+              {currentPlan.monthlyPrice === 0
+                ? "$0"
+                : `$${currentPlan.monthlyPrice}`}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Credits included</p>
+            <p className="mt-0.5 text-lg font-semibold tracking-tight">
+              {currentPlan.includedCredits}/mo
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Renews</p>
+            <p className="mt-0.5 text-lg font-semibold tracking-tight">
+              {formatDate(renewal.toISOString())}
             </p>
           </div>
         </CardContent>
       </Card>
 
+      {/* Plan comparison */}
       <section className="space-y-3">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Change plan
+          Compare plans
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {subscriptionPlans.map((plan) => {
             const isCurrent = plan.id === currentPlan.id;
             return (
               <Card
                 key={plan.id}
                 className={cn(
-                  "shadow-xs",
+                  "relative flex flex-col shadow-xs",
                   isCurrent && "ring-2 ring-primary",
-                  plan.highlighted && !isCurrent && "border-primary/30"
+                  plan.highlighted && !isCurrent && "border-primary/40"
                 )}
               >
+                {plan.highlighted ? (
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium text-primary-foreground">
+                    Most Popular
+                  </span>
+                ) : null}
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between gap-2">
                     {plan.name}
-                    {isCurrent ? (
-                      <Badge>Current</Badge>
-                    ) : plan.highlighted ? (
-                      <Badge variant="secondary">Popular</Badge>
-                    ) : null}
+                    {isCurrent ? <Badge variant="secondary">Current</Badge> : null}
                   </CardTitle>
                   <CardDescription>
-                    {plan.monthlyPrice === 0
-                      ? "$0 forever"
-                      : `$${plan.monthlyPrice}/month`}
+                    {priceLabel(plan.monthlyPrice)}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-1 flex-col gap-4">
                   <ul className="space-y-2 text-sm">
-                    {plan.features.slice(0, 4).map((feature) => (
+                    {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2">
                         <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
                         <span className="text-muted-foreground">{feature}</span>
@@ -97,7 +118,13 @@ export default function BillingPage() {
                   </ul>
                   <Button
                     className="mt-auto w-full"
-                    variant={isCurrent ? "outline" : "default"}
+                    variant={
+                      isCurrent
+                        ? "outline"
+                        : plan.highlighted
+                          ? "default"
+                          : "outline"
+                    }
                     disabled={isCurrent}
                   >
                     {isCurrent ? "Current plan" : plan.cta}
@@ -107,20 +134,37 @@ export default function BillingPage() {
             );
           })}
         </div>
+        <p className="text-xs text-muted-foreground">
+          Prototype — plan changes and payments aren&apos;t connected yet.
+        </p>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          Payment method
-        </h2>
-        <EmptyStateCard
-          icon={CreditCard}
-          title="No payment method on file"
-          description="Add a card when you upgrade — the Free plan never needs one."
-        >
-          <Button variant="outline">Add payment method</Button>
-        </EmptyStateCard>
-      </section>
+      {/* Payment method + billing history */}
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground">
+            Payment method
+          </h2>
+          <EmptyStateCard
+            icon={CreditCard}
+            title="No payment method on file"
+            description="Add a card when you upgrade — the Free plan never needs one."
+          >
+            <Button variant="outline">Add payment method</Button>
+          </EmptyStateCard>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground">
+            Billing history
+          </h2>
+          <EmptyStateCard
+            icon={Receipt}
+            title="No billing history yet"
+            description="Your TalentOS subscription invoices will appear here once you upgrade to a paid plan."
+          />
+        </section>
+      </div>
     </>
   );
 }

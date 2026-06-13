@@ -10,11 +10,20 @@ const tones: Record<string, Tone> = {
   confirmed: "success",
   completed: "success",
   published: "success",
+  "job-completed": "success",
+  "balance-paid": "success",
   // info
   sent: "info",
   viewed: "info",
+  refunded: "info",
+  quoted: "info",
+  "contract-sent": "info",
+  "deposit-paid": "info",
+  "advance-completed": "info",
   // warning
   pending: "warning",
+  "pending-client": "warning",
+  incomplete: "warning",
   inquiry: "warning",
   // danger
   overdue: "danger",
@@ -24,6 +33,17 @@ const tones: Record<string, Tone> = {
   cancelled: "neutral",
   expired: "neutral",
   archived: "neutral",
+  closed: "neutral",
+};
+
+/** Statuses whose stored key isn't the same as the human label. */
+const labels: Record<string, string> = {
+  "pending-client": "Pending client",
+  "contract-sent": "Contract sent",
+  "deposit-paid": "Deposit paid",
+  "advance-completed": "Advance completed",
+  "job-completed": "Job completed",
+  "balance-paid": "Balance paid",
 };
 
 const toneClasses: Record<Tone, string> = {
@@ -52,7 +72,7 @@ export function StatusBadge({
         className
       )}
     >
-      {status}
+      {labels[status] ?? status}
     </span>
   );
 }

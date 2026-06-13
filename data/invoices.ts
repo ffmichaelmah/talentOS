@@ -9,6 +9,12 @@ export const invoices: Invoice[] = [
     status: "sent",
     issueDate: "2026-06-05",
     dueDate: "2026-06-19",
+    job: {
+      serviceDescription: "DJ performance — 2h closing set with full visuals sync",
+      eventName: "Echoplex Saturday Residency",
+      eventDate: "2026-06-20",
+      location: "The Echoplex, Los Angeles, CA",
+    },
     lineItems: [
       {
         id: "li-1a",
@@ -22,8 +28,11 @@ export const invoices: Invoice[] = [
     taxRate: 0,
     taxAmount: 0,
     total: 1800,
+    depositAmount: 900,
     amountPaid: 900,
     currency: "USD",
+    paymentTerms: "50% deposit on signing; balance due on or before event day.",
+    cancellationTerms: "Cancellation within 14 days of the event forfeits the deposit.",
     notes: "50% deposit received. Balance due day of show.",
   },
   {
@@ -34,6 +43,12 @@ export const invoices: Invoice[] = [
     status: "viewed",
     issueDate: "2026-06-08",
     dueDate: "2026-07-08",
+    job: {
+      serviceDescription: "DJ performance — 2 × 90-min sets plus branded playlist curation",
+      eventName: "Lumen Summer Launch",
+      eventDate: "2026-06-27",
+      location: "Rooftop at The Proper, Los Angeles, CA",
+    },
     lineItems: [
       {
         id: "li-2a",
@@ -54,8 +69,11 @@ export const invoices: Invoice[] = [
     taxRate: 0,
     taxAmount: 0,
     total: 3500,
+    depositAmount: 1750,
     amountPaid: 1750,
     currency: "USD",
+    paymentTerms: "Net 30 from invoice date per vendor agreement (PO #LB-2284).",
+    cancellationTerms: "Cancellation within 21 days of activation forfeits the deposit.",
     notes: "Net-30 per Lumen vendor terms. PO #LB-2284.",
   },
   {
@@ -65,6 +83,12 @@ export const invoices: Invoice[] = [
     status: "overdue",
     issueDate: "2026-04-30",
     dueDate: "2026-05-14",
+    job: {
+      serviceDescription: "DJ performance — 2h peak-time warehouse set",
+      eventName: "Warehouse Series Vol. 11",
+      eventDate: "2026-04-25",
+      location: "Arts District, Los Angeles, CA",
+    },
     lineItems: [
       {
         id: "li-3a",
@@ -78,8 +102,11 @@ export const invoices: Invoice[] = [
     taxRate: 0,
     taxAmount: 0,
     total: 2000,
+    depositAmount: 0,
     amountPaid: 0,
     currency: "USD",
+    paymentTerms: "Full payment due within 14 days of invoice date.",
+    cancellationTerms: "Late payments accrue 1.5% interest per month.",
     notes: "Second reminder sent June 2.",
   },
   {
@@ -90,6 +117,12 @@ export const invoices: Invoice[] = [
     status: "draft",
     issueDate: "2026-06-10",
     dueDate: "2026-07-04",
+    job: {
+      serviceDescription: "Wedding reception DJ — 4.5h with first dance edit and mic package",
+      eventName: "Marchetti Wedding",
+      eventDate: "2026-07-18",
+      location: "Greystone Mansion, Beverly Hills, CA",
+    },
     lineItems: [
       {
         id: "li-4a",
@@ -117,8 +150,11 @@ export const invoices: Invoice[] = [
     taxRate: 0,
     taxAmount: 0,
     total: 4200,
+    depositAmount: 2100,
     amountPaid: 2100,
     currency: "USD",
+    paymentTerms: "50% deposit to confirm date; balance due 14 days before the wedding.",
+    cancellationTerms: "Cancellation within 30 days of the event forfeits the deposit.",
     notes: "Deposit applied. Send after final timeline confirmation.",
   },
   {
@@ -129,6 +165,12 @@ export const invoices: Invoice[] = [
     status: "paid",
     issueDate: "2026-04-10",
     dueDate: "2026-04-18",
+    job: {
+      serviceDescription: "Private party DJ — 4h set with sound system included",
+      eventName: "Kim 40th Birthday",
+      eventDate: "2026-04-18",
+      location: "Private Residence, Pasadena, CA",
+    },
     lineItems: [
       {
         id: "li-5a",
@@ -142,8 +184,11 @@ export const invoices: Invoice[] = [
     taxRate: 0,
     taxAmount: 0,
     total: 1500,
+    depositAmount: 450,
     amountPaid: 1500,
     currency: "USD",
+    paymentTerms: "30% deposit to confirm; balance due on event day.",
+    cancellationTerms: "Cancellation within 7 days of the event forfeits the deposit.",
     notes: "Paid via bank transfer on event day.",
   },
 ];

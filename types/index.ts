@@ -28,6 +28,11 @@ export interface User {
   avatarUrl?: string;
   talentType: TalentType;
   businessName?: string;
+  phone?: string;
+  /** Mailing address shown on documents. */
+  address?: string;
+  /** Bank / payment instructions printed on invoices. */
+  paymentDetails?: string;
   location: string;
   /** ISO 4217 code used as the default for documents, e.g. "USD". */
   currency: string;
@@ -50,6 +55,10 @@ export interface Client {
   phone?: string;
   type: ClientType;
   location?: string;
+  /** Full mailing address shown on the client profile. */
+  address?: string;
+  /** Optional tax / business registration number. */
+  taxNumber?: string;
   notes?: string;
   /** Lifetime totals — denormalized for dashboard display. */
   totalBookings: number;
@@ -75,6 +84,15 @@ export interface InvoiceLineItem {
   total: number;
 }
 
+/** The gig or campaign an invoice bills for. */
+export interface InvoiceJob {
+  serviceDescription: string;
+  /** Event / campaign name, e.g. "Lumen Summer Launch". */
+  eventName: string;
+  eventDate?: string;
+  location?: string;
+}
+
 export interface Invoice {
   id: string;
   /** Human-readable number shown on the document, e.g. "INV-2026-014". */
@@ -85,14 +103,21 @@ export interface Invoice {
   status: InvoiceStatus;
   issueDate: string;
   dueDate: string;
+  job?: InvoiceJob;
   lineItems: InvoiceLineItem[];
   subtotal: number;
+  /** Flat discount applied before tax. */
+  discountAmount?: number;
   /** e.g. 0.08 for 8% */
   taxRate: number;
   taxAmount: number;
   total: number;
+  /** Deposit agreed for this booking (may differ from amount paid so far). */
+  depositAmount?: number;
   amountPaid: number;
   currency: string;
+  paymentTerms?: string;
+  cancellationTerms?: string;
   notes?: string;
 }
 
@@ -101,16 +126,60 @@ export interface Invoice {
 export type ContractStatus =
   | "draft"
   | "sent"
+  | "pending-client"
   | "signed"
   | "expired"
-  | "declined";
+  | "cancelled";
 
+/** Legacy template grouping kept for older dummy data. */
 export type ContractTemplate =
   | "performance"
   | "brand-collab"
   | "content-production"
   | "appearance"
   | "custom";
+
+/** The guided contract types offered in the builder. */
+export type ContractType =
+  | "dj-booking"
+  | "influencer-campaign"
+  | "music-performance"
+  | "talent-appearance"
+  | "event-hosting"
+  | "brand-collaboration"
+  | "freelance-service";
+
+/**
+ * Rich, document-ready contract content. Optional so older dummy contracts
+ * (which only carry a termsSummary) still satisfy the type.
+ */
+export interface ContractDetails {
+  // Parties
+  talentLegalName: string;
+  clientLegalName: string;
+  clientCompany?: string;
+  clientEmail?: string;
+  clientAddress?: string;
+  // Job scope
+  serviceDescription: string;
+  deliverables?: string;
+  eventName?: string;
+  dateTime?: string;
+  location?: string;
+  // Fees & payment
+  depositAmount?: number;
+  balanceAmount?: number;
+  paymentDeadline?: string;
+  latePaymentTerms?: string;
+  // Terms
+  cancellationPolicy?: string;
+  reschedulePolicy?: string;
+  usageRights?: string;
+  exclusivity?: string;
+  travelAccommodation?: string;
+  technicalRider?: string;
+  forceMajeure?: string;
+}
 
 export interface Contract {
   id: string;
@@ -119,6 +188,8 @@ export interface Contract {
   bookingId?: string;
   status: ContractStatus;
   templateType: ContractTemplate;
+  /** Guided contract type shown in lists and the builder. */
+  contractType?: ContractType;
   fee: number;
   currency: string;
   /** Deposit required to confirm, as a fraction of fee (0.5 = 50%). */
@@ -128,6 +199,8 @@ export interface Contract {
   expiresAt?: string;
   /** Short summary of key terms for list views. */
   termsSummary?: string;
+  /** Full document content for the detail / preview view. */
+  details?: ContractDetails;
   createdAt: string;
 }
 
@@ -139,6 +212,18 @@ export type BookingStatus =
   | "confirmed"
   | "completed"
   | "cancelled";
+
+/** Pipeline stage a booking moves through from first contact to close. */
+export type BookingStage =
+  | "inquiry"
+  | "quoted"
+  | "confirmed"
+  | "contract-sent"
+  | "deposit-paid"
+  | "advance-completed"
+  | "job-completed"
+  | "balance-paid"
+  | "closed";
 
 export type EventType =
   | "club-night"
@@ -155,6 +240,8 @@ export interface Booking {
   title: string;
   clientId: string;
   status: BookingStatus;
+  /** Pipeline stage shown in the bookings CRM. */
+  stage: BookingStage;
   eventType: EventType;
   venueName: string;
   venueAddress?: string;
@@ -163,6 +250,8 @@ export interface Booking {
   endTime: string;
   fee: number;
   currency: string;
+  depositAmount?: number;
+  balanceAmount?: number;
   depositPaid: boolean;
   /** Cross-links to the documents generated for this booking. */
   invoiceId?: string;
@@ -174,34 +263,94 @@ export interface Booking {
 
 /* ------------------------------ Advance Form ----------------------------- */
 
-export type AdvanceFormStatus = "draft" | "sent" | "completed";
+export type AdvanceFormStatus =
+  | "draft"
+  | "sent"
+  | "completed"
+  | "incomplete"
+  | "expired";
 
-export interface OnSiteContact {
-  name: string;
-  role?: string;
-  phone: string;
+/** Top-level builder choice that decides which field set is shown. */
+export type AdvanceCategory = "event" | "campaign";
+
+/** The named advance types shown in the list. */
+export type AdvanceFormType =
+  | "event-performance"
+  | "music-performance"
+  | "dj-booking"
+  | "influencer-campaign"
+  | "content-creator-campaign";
+
+/** Logistics collected ahead of an event, performance, or booking. */
+export interface EventAdvanceDetails {
+  eventName?: string;
+  eventDate?: string;
+  callTime?: string;
+  performanceTime?: string;
+  venueName?: string;
+  venueAddress?: string;
+  contactPerson?: string;
+  contactPhone?: string;
+  clientCompany?: string;
+  expectedCrowd?: string;
+  dressCode?: string;
+  performanceDirection?: string;
+  technicalRider?: string;
+  soundcheckTime?: string;
+  parkingLoading?: string;
+  hotelDetails?: string;
+  flightDetails?: string;
+  groundTransport?: string;
+  itinerary?: string;
+  greenRoom?: string;
+  mealArrangement?: string;
+  hospitalityRider?: string;
+  specialNotes?: string;
+}
+
+/** Details collected ahead of an influencer / creator campaign. */
+export interface CampaignAdvanceDetails {
+  brandName?: string;
+  campaignTitle?: string;
+  deliverables?: string;
+  appearanceTime?: string;
+  appearanceDuration?: string;
+  postingDate?: string;
+  contentFormat?: string;
+  captionRequirement?: string;
+  hashtags?: string;
+  tagsMentions?: string;
+  usageRights?: string;
+  revisionRounds?: string;
+  approvalDeadline?: string;
+  productDelivery?: string;
+  paymentStatus?: string;
+  specialNotes?: string;
 }
 
 /**
- * Client advancing: the logistics sheet a talent sends ahead of an event
- * (timings, tech rider, hospitality, access) so show day runs smoothly.
+ * Client advancing: the briefing a talent collects from the client ahead of
+ * an event, performance, or campaign so everyone shows up prepared.
  */
 export interface AdvanceForm {
   id: string;
-  bookingId: string;
+  title: string;
+  type: AdvanceFormType;
+  category: AdvanceCategory;
   clientId: string;
+  bookingId?: string;
+  /** Booking or campaign label shown in the list. */
+  reference?: string;
   status: AdvanceFormStatus;
-  eventDate: string;
-  loadInTime?: string;
-  soundCheckTime?: string;
-  setTime: string;
-  setLengthMinutes: number;
-  stageDetails?: string;
-  equipmentProvided: string[];
-  equipmentRequired: string[];
-  hospitalityNotes?: string;
-  parkingDetails?: string;
-  onSiteContact: OnSiteContact;
+  /** Event or posting date used for list display. */
+  date?: string;
+  /** Whether a public share link has been generated. */
+  shareEnabled: boolean;
+  /** Whether the client has opened the shared link. */
+  shareViewed?: boolean;
+  eventDetails?: EventAdvanceDetails;
+  campaignDetails?: CampaignAdvanceDetails;
+  createdAt: string;
   updatedAt: string;
 }
 
