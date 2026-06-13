@@ -48,74 +48,95 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Refined soft-shadow scale (subtly violet-tinted) — premium, low-opacity
+ * elevation that overrides Tailwind's defaults app-wide.
+ */
+@theme {
+  --shadow-2xs: 0 1px 2px 0 oklch(0.21 0.04 285 / 0.04);
+  --shadow-xs: 0 1px 2px 0 oklch(0.21 0.04 285 / 0.05),
+    0 1px 3px -1px oklch(0.21 0.04 285 / 0.04);
+  --shadow-sm: 0 1px 3px 0 oklch(0.21 0.04 285 / 0.07),
+    0 1px 2px -1px oklch(0.21 0.04 285 / 0.05);
+  --shadow-md: 0 4px 14px -3px oklch(0.21 0.04 285 / 0.09),
+    0 2px 6px -2px oklch(0.21 0.04 285 / 0.06);
+  --shadow-lg: 0 14px 32px -8px oklch(0.21 0.04 285 / 0.13),
+    0 6px 14px -6px oklch(0.21 0.04 285 / 0.08);
+  --shadow-xl: 0 26px 52px -14px oklch(0.21 0.04 285 / 0.18);
+  --shadow-2xl: 0 36px 72px -18px oklch(0.21 0.04 285 / 0.22);
+}
+
 :root {
   --font-sans: var(--font-geist-sans);
-  --background: oklch(0.995 0.002 285);
-  --foreground: oklch(0.145 0.01 285);
+  /* Cool, faintly violet-tinted neutrals for a cohesive, considered surface. */
+  --background: oklch(0.994 0.0015 285);
+  --foreground: oklch(0.17 0.012 285);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.01 285);
+  --card-foreground: oklch(0.17 0.012 285);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.01 285);
-  --primary: oklch(0.51 0.23 285);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.17 0.012 285);
+  /* Refined violet — a touch less electric than before for a premium feel. */
+  --primary: oklch(0.515 0.21 285);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.968 0.004 285);
+  --secondary-foreground: oklch(0.24 0.015 285);
+  --muted: oklch(0.968 0.004 285);
+  --muted-foreground: oklch(0.552 0.014 285);
+  --accent: oklch(0.965 0.008 285);
+  --accent-foreground: oklch(0.24 0.015 285);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: oklch(0.92 0.005 285);
+  --input: oklch(0.92 0.005 285);
   --ring: oklch(0.6 0.18 285);
-  --chart-1: oklch(0.51 0.23 285);
+  --chart-1: oklch(0.515 0.21 285);
   --chart-2: oklch(0.65 0.17 300);
   --chart-3: oklch(0.72 0.12 230);
   --chart-4: oklch(0.77 0.14 80);
   --chart-5: oklch(0.6 0.2 20);
   --radius: 0.75rem;
-  --sidebar: oklch(0.985 0.002 285);
-  --sidebar-foreground: oklch(0.145 0.01 285);
-  --sidebar-primary: oklch(0.51 0.23 285);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.984 0.003 285);
+  --sidebar-foreground: oklch(0.17 0.012 285);
+  --sidebar-primary: oklch(0.515 0.21 285);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.962 0.008 285);
+  --sidebar-accent-foreground: oklch(0.24 0.015 285);
+  --sidebar-border: oklch(0.92 0.005 285);
+  --sidebar-ring: oklch(0.6 0.18 285);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.67 0.2 285);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  /* Lifted, faintly violet-tinted near-black with layered surfaces. */
+  --background: oklch(0.175 0.006 285);
+  --foreground: oklch(0.985 0.001 285);
+  --card: oklch(0.215 0.008 285);
+  --card-foreground: oklch(0.985 0.001 285);
+  --popover: oklch(0.215 0.008 285);
+  --popover-foreground: oklch(0.985 0.001 285);
+  --primary: oklch(0.68 0.19 285);
+  --primary-foreground: oklch(0.16 0.02 285);
+  --secondary: oklch(0.27 0.008 285);
+  --secondary-foreground: oklch(0.985 0.001 285);
+  --muted: oklch(0.27 0.008 285);
+  --muted-foreground: oklch(0.715 0.013 285);
+  --accent: oklch(0.29 0.012 285);
+  --accent-foreground: oklch(0.985 0.001 285);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.67 0.2 285);
-  --chart-1: oklch(0.67 0.2 285);
+  --ring: oklch(0.68 0.19 285);
+  --chart-1: oklch(0.68 0.19 285);
   --chart-2: oklch(0.72 0.15 300);
   --chart-3: oklch(0.75 0.12 230);
   --chart-4: oklch(0.8 0.13 80);
   --chart-5: oklch(0.68 0.18 20);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar: oklch(0.2 0.007 285);
+  --sidebar-foreground: oklch(0.985 0.001 285);
+  --sidebar-primary: oklch(0.68 0.19 285);
+  --sidebar-primary-foreground: oklch(0.16 0.02 285);
+  --sidebar-accent: oklch(0.27 0.008 285);
+  --sidebar-accent-foreground: oklch(0.985 0.001 285);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.68 0.19 285);
 }
 
 @layer base {
@@ -124,8 +145,42 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+  }
+
+  /* Tighter tracking on display-scale headings for a more refined feel. */
+  h1,
+  h2 {
+    letter-spacing: -0.02em;
+  }
+
+  /* Brand-tinted text selection. */
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 22%, transparent);
+  }
+
+  /* Consistent, visible keyboard focus for custom controls (filter pills,
+     links). shadcn/Base UI components carry their own ring and a data-slot,
+     so they're excluded to avoid a doubled indicator. */
+  :focus-visible:not([data-slot]) {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Respect users who prefer reduced motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
