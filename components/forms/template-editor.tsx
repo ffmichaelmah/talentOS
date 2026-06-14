@@ -172,8 +172,8 @@ export function TemplateEditor({ template }: { template?: DocumentTemplate }) {
           <CardHeader>
             <CardTitle>Body</CardTitle>
             <CardDescription>
-              Write the document and insert merge tokens — they're filled in
-              automatically when a user generates a document.
+              Write the document and insert merge tokens — they&apos;re filled
+              in automatically when a user generates a document.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -400,7 +400,7 @@ export function TemplateEditor({ template }: { template?: DocumentTemplate }) {
           {savedAt ? (
             <p className="text-center text-xs text-muted-foreground">
               Saved at {savedAt.toLocaleTimeString()} — prototype only, changes
-              aren't persisted yet.
+              aren&apos;t persisted yet.
             </p>
           ) : null}
         </div>

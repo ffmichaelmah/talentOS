@@ -454,7 +454,7 @@ export function ContractForm() {
                 Client signature
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
-                Date signed captured on the client's e-signature.
+                Date signed captured on the client&apos;s e-signature.
               </p>
             </div>
           </CardContent>

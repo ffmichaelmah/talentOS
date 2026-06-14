@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Briefcase,
   Building2,
-  Calendar,
   CalendarPlus,
   ClipboardList,
   Coins,

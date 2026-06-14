@@ -9,7 +9,6 @@ import {
   LayoutTemplate,
   Receipt,
   Settings,
-  ShieldCheck,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -32,9 +31,9 @@ export const dashboardNav: NavItem[] = [
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export const dashboardSecondaryNav: NavItem[] = [
-  { label: "Admin", href: "/admin", icon: ShieldCheck },
-];
+// Admin tooling is internal-only and intentionally not linked from the
+// talent-facing app. The /admin routes remain reachable directly.
+export const dashboardSecondaryNav: NavItem[] = [];
 
 export const adminNav: NavItem[] = [
   { label: "Overview", href: "/admin", icon: LayoutDashboard },
