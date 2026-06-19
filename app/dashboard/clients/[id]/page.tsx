@@ -31,42 +31,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { clients } from "@/data";
-import {
-  CLIENT_TYPE_LABELS,
-  bookingsForClient,
-  collectedRevenue,
-  contractsForClient,
-  invoicesForClient,
-  lastBookingDate,
-} from "@/lib/clients";
+import { requireUser } from "@/lib/auth";
+import { CLIENT_TYPE_LABELS } from "@/lib/clients";
 import { contractTypeLabel } from "@/lib/contracts";
 import { formatCurrency, formatDate } from "@/lib/format";
+import {
+  getBookingsForClient,
+  getClientById,
+  getContractsForClient,
+  getInvoicesForClient,
+} from "@/lib/queries";
 
-export async function generateMetadata(
-  props: PageProps<"/dashboard/clients/[id]">
-): Promise<Metadata> {
-  const { id } = await props.params;
-  const client = clients.find((c) => c.id === id);
-  return { title: client ? client.name : "Client" };
-}
-
-export function generateStaticParams() {
-  return clients.map((c) => ({ id: c.id }));
-}
+export const metadata: Metadata = {
+  title: "Client",
+};
 
 export default async function ClientDetailPage(
   props: PageProps<"/dashboard/clients/[id]">
 ) {
   const { id } = await props.params;
-  const client = clients.find((c) => c.id === id);
+  const user = await requireUser();
+  const client = await getClientById(user.id, id);
   if (!client) notFound();
 
-  const pastBookings = bookingsForClient(id);
-  const clientInvoices = invoicesForClient(id);
-  const clientContracts = contractsForClient(id);
-  const last = lastBookingDate(id);
-  const collected = collectedRevenue(id);
+  const [pastBookings, clientInvoices, clientContracts] = await Promise.all([
+    getBookingsForClient(user.id, id),
+    getInvoicesForClient(user.id, id),
+    getContractsForClient(user.id, id),
+  ]);
+  const last = pastBookings[0]?.startTime;
+  const collected = clientInvoices.reduce((sum, i) => sum + i.amountPaid, 0);
   const outstanding = clientInvoices.reduce(
     (sum, i) => sum + (i.total - i.amountPaid),
     0

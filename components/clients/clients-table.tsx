@@ -16,10 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { clients } from "@/data";
-import { CLIENT_TYPE_LABELS, lastBookingDate } from "@/lib/clients";
+import { CLIENT_TYPE_LABELS } from "@/lib/clients";
 import { formatCurrency, formatDate } from "@/lib/format";
-import type { ClientType } from "@/types";
+import type { Client, ClientType } from "@/types";
 import { cn } from "@/lib/utils";
 
 type Filter = "all" | ClientType;
@@ -33,7 +32,13 @@ const filters: { value: Filter; label: string }[] = [
   { value: "private", label: "Private" },
 ];
 
-export function ClientsTable() {
+export function ClientsTable({
+  clients,
+  lastBooking,
+}: {
+  clients: Client[];
+  lastBooking: Record<string, string | undefined>;
+}) {
   const [filter, setFilter] = React.useState<Filter>("all");
   const [query, setQuery] = React.useState("");
 
@@ -120,7 +125,7 @@ export function ClientsTable() {
               </TableHeader>
               <TableBody>
                 {rows.map((client) => {
-                  const last = lastBookingDate(client.id);
+                  const last = lastBooking[client.id];
                   return (
                     <TableRow key={client.id}>
                       <TableCell>

@@ -1,0 +1,186 @@
+// TalentOS — local-first persistence (SQLite). Field types mirror the app's
+// TypeScript interfaces so query results map 1:1 to the existing UI shapes.
+// Complex nested structures are stored as JSON strings for SQLite portability.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String
+  displayName    String
+  avatarUrl      String?
+  talentType     String   @default("dj")
+  businessName   String?
+  phone          String?
+  address        String?
+  paymentDetails String?
+  location       String   @default("")
+  currency       String   @default("USD")
+  creditBalance  Int      @default(5)
+  planId         String   @default("plan-free")
+  createdAt      String
+
+  clients            Client[]
+  bookings           Booking[]
+  invoices           Invoice[]
+  contracts          Contract[]
+  advanceForms       AdvanceForm[]
+  creditTransactions CreditTransaction[]
+}
+
+model Client {
+  id            String  @id @default(cuid())
+  userId        String
+  name          String
+  company       String?
+  email         String
+  phone         String?
+  type          String  @default("venue")
+  location      String?
+  address       String?
+  taxNumber     String?
+  notes         String?
+  totalBookings Int     @default(0)
+  totalBilled   Int     @default(0)
+  createdAt     String
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings  Booking[]
+  invoices  Invoice[]
+  contracts Contract[]
+
+  @@index([userId])
+}
+
+model Booking {
+  id            String  @id @default(cuid())
+  userId        String
+  clientId      String
+  title         String
+  status        String
+  stage         String
+  eventType     String
+  venueName     String
+  venueAddress  String?
+  startTime     String
+  endTime       String
+  fee           Int
+  currency      String  @default("USD")
+  depositAmount Int?
+  balanceAmount Int?
+  depositPaid   Boolean @default(false)
+  invoiceId     String?
+  contractId    String?
+  advanceFormId String?
+  notes         String?
+  createdAt     String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([clientId])
+}
+
+model Invoice {
+  id               String  @id @default(cuid())
+  userId           String
+  clientId         String
+  bookingId        String?
+  invoiceNumber    String
+  status           String
+  issueDate        String
+  dueDate          String
+  job              String? // JSON: InvoiceJob
+  lineItems        String // JSON: InvoiceLineItem[]
+  subtotal         Int
+  discountAmount   Int?
+  taxRate          Float   @default(0)
+  taxAmount        Int     @default(0)
+  total            Int
+  depositAmount    Int?
+  amountPaid       Int     @default(0)
+  currency         String  @default("USD")
+  paymentTerms     String?
+  cancellationTerms String?
+  notes            String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([clientId])
+}
+
+model Contract {
+  id            String  @id @default(cuid())
+  userId        String
+  clientId      String
+  bookingId     String?
+  title         String
+  status        String
+  templateType  String
+  contractType  String?
+  fee           Int
+  currency      String  @default("USD")
+  depositPercent Float
+  sentAt        String?
+  signedAt      String?
+  expiresAt     String?
+  termsSummary  String?
+  details       String? // JSON: ContractDetails
+  createdAt     String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([clientId])
+}
+
+model AdvanceForm {
+  id              String  @id @default(cuid())
+  userId          String
+  clientId        String
+  bookingId       String?
+  title           String
+  type            String
+  category        String
+  reference       String?
+  status          String
+  date            String?
+  shareEnabled    Boolean @default(false)
+  shareViewed     Boolean @default(false)
+  eventDetails    String? // JSON: EventAdvanceDetails
+  campaignDetails String? // JSON: CampaignAdvanceDetails
+  createdAt       String
+  updatedAt       String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model CreditTransaction {
+  id              String  @id @default(cuid())
+  userId          String
+  type            String
+  amount          Int
+  balanceAfter    Int
+  description     String
+  relatedDocument String? // JSON: { kind, id }
+  createdAt       String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

@@ -13,8 +13,6 @@ import {
   dashboardSecondaryNav,
   type NavItem,
 } from "@/lib/navigation";
-import { currentUser } from "@/data";
-import { getCurrentPlan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
 // Nav configs contain icon components, which can't cross the server→client
@@ -54,11 +52,20 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   );
 }
 
-export function Sidebar({ variant = "app" }: { variant?: "app" | "admin" }) {
+export function Sidebar({
+  variant = "app",
+  creditBalance = 0,
+  includedCredits = 0,
+  planName = "Free",
+}: {
+  variant?: "app" | "admin";
+  creditBalance?: number;
+  includedCredits?: number;
+  planName?: string;
+}) {
   const { nav, secondaryNav, homeHref, badge, showCredits } =
     variants[variant];
   const pathname = usePathname();
-  const plan = getCurrentPlan();
   // The section home ("/admin", "/dashboard") only matches exactly, so it
   // doesn't stay highlighted while a sibling like "/dashboard/invoices" is open.
   const isActive = (href: string) =>
@@ -80,12 +87,12 @@ export function Sidebar({ variant = "app" }: { variant?: "app" | "admin" }) {
           {showCredits ? (
             <div className="space-y-3 rounded-xl border bg-card p-3.5">
               <CreditMeter
-                balance={currentUser.creditBalance}
-                included={plan.includedCredits}
+                balance={creditBalance}
+                included={includedCredits}
                 compact
               />
               <div className="flex items-center justify-between">
-                <Badge variant="secondary">{plan.name} plan</Badge>
+                <Badge variant="secondary">{planName} plan</Badge>
                 <Link
                   href="/dashboard/billing"
                   className="text-xs font-medium text-primary hover:underline"

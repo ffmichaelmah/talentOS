@@ -15,15 +15,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { currentUser } from "@/data";
 import { dashboardNav, dashboardSecondaryNav } from "@/lib/navigation";
-import { getCurrentPlan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
-export function MobileNav() {
+export function MobileNav({
+  creditBalance = 0,
+  includedCredits = 0,
+}: {
+  creditBalance?: number;
+  includedCredits?: number;
+}) {
   const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
-  const plan = getCurrentPlan();
 
   const isActive = (href: string) =>
     href === "/dashboard"
@@ -68,8 +71,8 @@ export function MobileNav() {
         </nav>
         <div className="border-t border-border/60 p-4">
           <CreditMeter
-            balance={currentUser.creditBalance}
-            included={plan.includedCredits}
+            balance={creditBalance}
+            included={includedCredits}
             compact
           />
         </div>

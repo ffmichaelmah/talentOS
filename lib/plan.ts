@@ -1,11 +1,15 @@
 import { currentUser, subscriptionPlans } from "@/data";
 import type { SubscriptionPlan } from "@/types";
 
-export function getCurrentPlan(): SubscriptionPlan {
+/** Look up a plan from the static catalog by id (falls back to Free). */
+export function planById(planId: string): SubscriptionPlan {
   return (
-    subscriptionPlans.find((p) => p.id === currentUser.planId) ??
-    subscriptionPlans[0]
+    subscriptionPlans.find((p) => p.id === planId) ?? subscriptionPlans[0]
   );
+}
+
+export function getCurrentPlan(): SubscriptionPlan {
+  return planById(currentUser.planId);
 }
 
 /** Contracts unlock on Starter and above. */

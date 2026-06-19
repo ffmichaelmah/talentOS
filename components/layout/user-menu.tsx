@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { CreditCard, LogOut, Settings, UserRound } from "lucide-react";
 
+import { logoutAction } from "@/app/actions/auth";
+import type { ChromeUser } from "@/components/layout/topbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,12 +16,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { currentUser } from "@/data";
-import { getCurrentPlan } from "@/lib/plan";
 
-export function UserMenu() {
-  const plan = getCurrentPlan();
-  const initials = currentUser.name
+export function UserMenu({ user }: { user: ChromeUser }) {
+  const initials = user.name
     .split(" ")
     .map((part) => part[0])
     .join("")
@@ -38,50 +37,46 @@ export function UserMenu() {
         }
       >
         <Avatar className="size-8">
-          <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+          <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
         <span className="hidden text-left text-sm leading-tight sm:block">
-          <span className="block font-medium">{currentUser.displayName}</span>
+          <span className="block font-medium">{user.displayName}</span>
           <span className="block text-xs text-muted-foreground">
-            {plan.name} plan
+            {user.planName} plan
           </span>
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuLabel>
-          <p className="font-medium">{currentUser.name}</p>
+          <p className="font-medium">{user.name}</p>
           <p className="text-xs font-normal text-muted-foreground">
-            {currentUser.email}
+            {user.email}
           </p>
           <Badge variant="secondary" className="mt-1.5">
-            {plan.name} plan
+            {user.planName} plan
           </Badge>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          render={<Link href="/dashboard/settings" />}
-        >
+        <DropdownMenuItem render={<Link href="/dashboard/settings" />}>
           <UserRound className="size-4" />
           Profile & settings
         </DropdownMenuItem>
-        <DropdownMenuItem
-          render={<Link href="/dashboard/billing" />}
-        >
+        <DropdownMenuItem render={<Link href="/dashboard/billing" />}>
           <CreditCard className="size-4" />
           Billing & plan
         </DropdownMenuItem>
-        <DropdownMenuItem
-          render={<Link href="/dashboard/credits" />}
-        >
+        <DropdownMenuItem render={<Link href="/dashboard/credits" />}>
           <Settings className="size-4" />
           Credits
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href="/login" />}>
-          <LogOut className="size-4" />
-          Log out
-        </DropdownMenuItem>
+        <form action={logoutAction}>
+          <DropdownMenuItem render={<button type="submit" className="w-full" />}>
+            <LogOut className="size-4" />
+            Log out
+          </DropdownMenuItem>
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );

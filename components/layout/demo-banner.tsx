@@ -18,7 +18,7 @@ export function DemoBanner() {
       <Sparkles className="size-3.5 shrink-0 text-primary" />
       <span>
         <span className="font-medium text-foreground">Demo preview</span> —
-        explore freely; your data isn&apos;t saved yet.
+        accounts &amp; clients are saved; other modules are still illustrative.
       </span>
       <button
         type="button"

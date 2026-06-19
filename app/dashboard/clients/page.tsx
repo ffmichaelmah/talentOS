@@ -5,13 +5,20 @@ import { Plus } from "lucide-react";
 import { ClientsTable } from "@/components/clients/clients-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { clients } from "@/data";
+import { requireUser } from "@/lib/auth";
+import { getClients, lastBookingByClient } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Clients",
 };
 
-export default function ClientsPage() {
+export default async function ClientsPage() {
+  const user = await requireUser();
+  const [clients, lastBooking] = await Promise.all([
+    getClients(user.id),
+    lastBookingByClient(user.id),
+  ]);
+
   return (
     <>
       <PageHeader
@@ -27,7 +34,7 @@ export default function ClientsPage() {
           </Button>
         }
       />
-      <ClientsTable />
+      <ClientsTable clients={clients} lastBooking={lastBooking} />
     </>
   );
 }

@@ -42,3 +42,9 @@ next-env.d.ts
 
 # local clone of the GitHub repo — not part of the project
 /talentOS/
+
+# local SQLite database (reproduced via npm run db:reset)
+/prisma/dev.db
+/prisma/dev.db-journal
+/prisma/*.db
+/prisma/*.db-journal
