@@ -22,38 +22,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { bookings } from "@/data";
-import {
-  EVENT_TYPE_LABELS,
-  advanceFor,
-  clientFor,
-  contractFor,
-  invoiceFor,
-} from "@/lib/bookings";
+import { requireUser } from "@/lib/auth";
+import { EVENT_TYPE_LABELS } from "@/lib/bookings";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/format";
-import type { Booking } from "@/types";
+import {
+  getAdvanceFormById,
+  getBookingById,
+  getClientById,
+  getContractById,
+  getInvoiceById,
+} from "@/lib/queries";
+import type { AdvanceForm, Booking, Contract, Invoice } from "@/types";
 
-export async function generateMetadata(
-  props: PageProps<"/dashboard/bookings/[id]">
-): Promise<Metadata> {
-  const { id } = await props.params;
-  const booking = bookings.find((b) => b.id === id);
-  return { title: booking ? booking.title : "Booking" };
-}
+export const metadata: Metadata = {
+  title: "Booking",
+};
 
-export function generateStaticParams() {
-  return bookings.map((b) => ({ id: b.id }));
-}
-
-function buildTimeline(booking: Booking) {
+function buildTimeline(
+  booking: Booking,
+  invoice: Invoice | null,
+  contract: Contract | null,
+  advance: AdvanceForm | null
+) {
   const events: { date: string; label: string }[] = [];
   events.push({ date: booking.createdAt, label: "Booking created" });
-  const contract = contractFor(booking);
   if (contract?.sentAt)
     events.push({ date: contract.sentAt, label: "Contract sent to client" });
   if (contract?.signedAt)
     events.push({ date: contract.signedAt, label: "Contract signed" });
-  const invoice = invoiceFor(booking);
   if (invoice)
     events.push({
       date: `${invoice.issueDate}T09:00:00Z`,
@@ -64,7 +60,6 @@ function buildTimeline(booking: Booking) {
       date: `${invoice.issueDate}T12:00:00Z`,
       label: "Deposit received",
     });
-  const advance = advanceFor(booking);
   if (advance?.status === "completed")
     events.push({ date: advance.updatedAt, label: "Advance form completed" });
   return events.sort((a, b) => a.date.localeCompare(b.date));
@@ -115,14 +110,19 @@ export default async function BookingDetailPage(
   props: PageProps<"/dashboard/bookings/[id]">
 ) {
   const { id } = await props.params;
-  const booking = bookings.find((b) => b.id === id);
+  const user = await requireUser();
+  const booking = await getBookingById(user.id, id);
   if (!booking) notFound();
 
-  const client = clientFor(booking);
-  const invoice = invoiceFor(booking);
-  const contract = contractFor(booking);
-  const advance = advanceFor(booking);
-  const timeline = buildTimeline(booking);
+  const [client, invoice, contract, advance] = await Promise.all([
+    getClientById(user.id, booking.clientId),
+    booking.invoiceId ? getInvoiceById(user.id, booking.invoiceId) : null,
+    booking.contractId ? getContractById(user.id, booking.contractId) : null,
+    booking.advanceFormId
+      ? getAdvanceFormById(user.id, booking.advanceFormId)
+      : null,
+  ]);
+  const timeline = buildTimeline(booking, invoice, contract, advance);
 
   const deposit = booking.depositAmount ?? 0;
   const balance = booking.balanceAmount ?? booking.fee - deposit;

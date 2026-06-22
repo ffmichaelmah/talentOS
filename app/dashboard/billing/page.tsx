@@ -13,8 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { subscriptionPlans } from "@/data";
+import { requireUser } from "@/lib/auth";
 import { formatDate } from "@/lib/format";
-import { getCurrentPlan } from "@/lib/plan";
+import { planById } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -25,8 +26,9 @@ function priceLabel(monthly: number): string {
   return monthly === 0 ? "Free forever" : `$${monthly}/month`;
 }
 
-export default function BillingPage() {
-  const currentPlan = getCurrentPlan();
+export default async function BillingPage() {
+  const user = await requireUser();
+  const currentPlan = planById(user.planId);
   const now = new Date();
   const renewal = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 

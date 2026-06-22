@@ -17,14 +17,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { advanceForms } from "@/data";
 import {
   advanceTypeLabel,
   clientDisplayName,
   shareStatusLabel,
 } from "@/lib/advancing";
 import { formatDate } from "@/lib/format";
-import type { AdvanceFormStatus } from "@/types";
+import type { AdvanceForm, AdvanceFormStatus } from "@/types";
 import { cn } from "@/lib/utils";
 
 type Filter = "all" | AdvanceFormStatus;
@@ -44,7 +43,11 @@ const shareToneClasses: Record<string, string> = {
   none: "bg-muted text-muted-foreground",
 };
 
-export function AdvancingTable() {
+export function AdvancingTable({
+  advanceForms,
+}: {
+  advanceForms: AdvanceForm[];
+}) {
   const [filter, setFilter] = React.useState<Filter>("all");
   const [query, setQuery] = React.useState("");
 

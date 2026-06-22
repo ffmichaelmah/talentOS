@@ -17,8 +17,8 @@ export function DemoBanner() {
     <div className="flex items-center justify-center gap-2 border-b border-primary/15 bg-primary/5 px-4 py-2 text-center text-xs text-muted-foreground">
       <Sparkles className="size-3.5 shrink-0 text-primary" />
       <span>
-        <span className="font-medium text-foreground">Demo preview</span> —
-        accounts &amp; clients are saved; other modules are still illustrative.
+        <span className="font-medium text-foreground">Demo preview</span> — your
+        account and data are saved; some create actions are still illustrative.
       </span>
       <button
         type="button"

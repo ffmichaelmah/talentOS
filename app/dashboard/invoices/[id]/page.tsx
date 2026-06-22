@@ -6,27 +6,22 @@ import { ArrowLeft } from "lucide-react";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { InvoiceDocument } from "@/components/invoices/invoice-document";
 import { Button } from "@/components/ui/button";
-import { invoices } from "@/data";
+import { requireUser } from "@/lib/auth";
 import { clientDisplayName } from "@/lib/invoices";
+import { getClientById, getInvoiceById } from "@/lib/queries";
 
-export async function generateMetadata(
-  props: PageProps<"/dashboard/invoices/[id]">
-): Promise<Metadata> {
-  const { id } = await props.params;
-  const invoice = invoices.find((i) => i.id === id);
-  return { title: invoice ? invoice.invoiceNumber : "Invoice" };
-}
-
-export function generateStaticParams() {
-  return invoices.map((i) => ({ id: i.id }));
-}
+export const metadata: Metadata = {
+  title: "Invoice",
+};
 
 export default async function InvoiceDetailPage(
   props: PageProps<"/dashboard/invoices/[id]">
 ) {
   const { id } = await props.params;
-  const invoice = invoices.find((i) => i.id === id);
+  const user = await requireUser();
+  const invoice = await getInvoiceById(user.id, id);
   if (!invoice) notFound();
+  const client = await getClientById(user.id, invoice.clientId);
 
   return (
     <>
@@ -53,7 +48,7 @@ export default async function InvoiceDetailPage(
         <InvoiceActions actions={["export", "send"]} />
       </div>
 
-      <InvoiceDocument invoice={invoice} />
+      <InvoiceDocument invoice={invoice} user={user} client={client} />
     </>
   );
 }

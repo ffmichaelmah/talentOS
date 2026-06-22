@@ -25,22 +25,24 @@ import {
 } from "@/components/ui/table";
 import {
   CREDIT_COSTS,
-  creditHistory,
   creditStats,
   relatedDocument,
   transactionStatus,
 } from "@/lib/credits";
 import { formatDateTime } from "@/lib/format";
-import { getCurrentPlan } from "@/lib/plan";
+import { requireUser } from "@/lib/auth";
+import { planById } from "@/lib/plan";
+import { getCreditTransactions } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Credits",
 };
 
-export default function CreditsPage() {
-  const plan = getCurrentPlan();
-  const stats = creditStats();
-  const history = creditHistory();
+export default async function CreditsPage() {
+  const user = await requireUser();
+  const plan = planById(user.planId);
+  const stats = creditStats(user.creditBalance, plan.includedCredits);
+  const history = await getCreditTransactions(user.id);
 
   return (
     <>

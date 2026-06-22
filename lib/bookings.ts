@@ -1,4 +1,3 @@
-import { advanceForms, bookings, clients, contracts, invoices } from "@/data";
 import type { Booking, BookingStage, EventType } from "@/types";
 
 export const BOOKING_STAGE_LABELS: Record<BookingStage, string> = {
@@ -32,33 +31,6 @@ export const EVENT_TYPE_LABELS: Record<EventType, string> = {
   "video-shoot": "Video shoot",
 };
 
-export function bookingById(id: string): Booking | undefined {
-  return bookings.find((b) => b.id === id);
-}
-
-export function clientFor(booking: Booking) {
-  return clients.find((c) => c.id === booking.clientId);
-}
-
 export function clientDisplayName(booking: Booking): string {
-  const client = clientFor(booking);
-  return client?.company ?? client?.name ?? "—";
-}
-
-export function invoiceFor(booking: Booking) {
-  return booking.invoiceId
-    ? invoices.find((i) => i.id === booking.invoiceId)
-    : undefined;
-}
-
-export function contractFor(booking: Booking) {
-  return booking.contractId
-    ? contracts.find((c) => c.id === booking.contractId)
-    : undefined;
-}
-
-export function advanceFor(booking: Booking) {
-  return booking.advanceFormId
-    ? advanceForms.find((a) => a.id === booking.advanceFormId)
-    : undefined;
+  return booking.clientName ?? "—";
 }

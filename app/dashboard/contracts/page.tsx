@@ -6,16 +6,18 @@ import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
 import { ContractsTable } from "@/components/contracts/contracts-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { contracts } from "@/data";
-import { canUseContracts, getCurrentPlan } from "@/lib/plan";
+import { requireUser } from "@/lib/auth";
+import { canUseContracts, planById } from "@/lib/plan";
+import { getContracts } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Contracts",
 };
 
-export default function ContractsPage() {
-  const plan = getCurrentPlan();
-  const unlocked = canUseContracts(plan);
+export default async function ContractsPage() {
+  const user = await requireUser();
+  const contracts = await getContracts(user.id);
+  const unlocked = canUseContracts(planById(user.planId));
 
   return (
     <>
@@ -41,7 +43,7 @@ export default function ContractsPage() {
         />
       ) : null}
 
-      <ContractsTable />
+      <ContractsTable contracts={contracts} />
     </>
   );
 }

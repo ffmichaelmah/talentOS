@@ -1,4 +1,3 @@
-import { clients, contracts } from "@/data";
 import type { Contract, ContractType } from "@/types";
 
 /**
@@ -41,17 +40,6 @@ export function contractTypeLabel(type?: ContractType): string {
   return type ? CONTRACT_TYPE_LABELS[type] : "Contract";
 }
 
-export function clientFor(contract: Contract) {
-  return clients.find((c) => c.id === contract.clientId);
-}
-
 export function clientDisplayName(contract: Contract): string {
-  const client = clientFor(contract);
-  return client?.company ?? client?.name ?? "—";
+  return contract.clientName ?? "—";
 }
-
-export function nextContractTitle(): string {
-  return "Untitled contract";
-}
-
-export { contracts };

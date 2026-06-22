@@ -13,15 +13,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { currentUser } from "@/data";
-import { getCurrentPlan } from "@/lib/plan";
+import { requireUser } from "@/lib/auth";
+import { planById } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Settings",
 };
 
-export default function SettingsPage() {
-  const plan = getCurrentPlan();
+export default async function SettingsPage() {
+  const user = await requireUser();
+  const plan = planById(user.planId);
 
   return (
     <>
@@ -40,11 +41,11 @@ export default function SettingsPage() {
         <CardContent className="space-y-5">
           <div className="flex items-center gap-4">
             <Avatar className="size-14">
-              <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+              <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
               <AvatarFallback>MR</AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium">{currentUser.name}</p>
+              <p className="font-medium">{user.name}</p>
               <Badge variant="secondary" className="mt-1">
                 {plan.name} plan
               </Badge>
@@ -53,30 +54,30 @@ export default function SettingsPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="set-name">Full name</Label>
-              <Input id="set-name" defaultValue={currentUser.name} />
+              <Input id="set-name" defaultValue={user.name} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="set-stage">Stage / display name</Label>
-              <Input id="set-stage" defaultValue={currentUser.displayName} />
+              <Input id="set-stage" defaultValue={user.displayName} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="set-email">Email</Label>
-              <Input id="set-email" defaultValue={currentUser.email} />
+              <Input id="set-email" defaultValue={user.email} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="set-business">Business name</Label>
               <Input
                 id="set-business"
-                defaultValue={currentUser.businessName}
+                defaultValue={user.businessName ?? ""}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="set-location">Location</Label>
-              <Input id="set-location" defaultValue={currentUser.location} />
+              <Input id="set-location" defaultValue={user.location} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="set-currency">Default currency</Label>
-              <Input id="set-currency" defaultValue={currentUser.currency} />
+              <Input id="set-currency" defaultValue={user.currency} />
             </div>
           </div>
           <div className="flex items-center gap-3">

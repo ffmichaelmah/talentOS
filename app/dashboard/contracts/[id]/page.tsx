@@ -9,29 +9,28 @@ import {
   contractToView,
 } from "@/components/contracts/contract-document";
 import { Button } from "@/components/ui/button";
-import { contracts } from "@/data";
+import { requireUser } from "@/lib/auth";
 import { clientDisplayName, contractTypeLabel } from "@/lib/contracts";
+import { getClientById, getContractById } from "@/lib/queries";
 
-export async function generateMetadata(
-  props: PageProps<"/dashboard/contracts/[id]">
-): Promise<Metadata> {
-  const { id } = await props.params;
-  const contract = contracts.find((c) => c.id === id);
-  return { title: contract ? contract.title : "Contract" };
-}
-
-export function generateStaticParams() {
-  return contracts.map((c) => ({ id: c.id }));
-}
+export const metadata: Metadata = {
+  title: "Contract",
+};
 
 export default async function ContractDetailPage(
   props: PageProps<"/dashboard/contracts/[id]">
 ) {
   const { id } = await props.params;
-  const contract = contracts.find((c) => c.id === id);
+  const user = await requireUser();
+  const contract = await getContractById(user.id, id);
   if (!contract) notFound();
+  const client = await getClientById(user.id, contract.clientId);
 
-  const view = contractToView(contract);
+  const view = contractToView(
+    contract,
+    { name: user.name, businessName: user.businessName, email: user.email },
+    client
+  );
 
   return (
     <>

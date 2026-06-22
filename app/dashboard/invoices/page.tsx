@@ -6,18 +6,24 @@ import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
 import { InvoicesTable } from "@/components/invoices/invoices-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { invoices } from "@/data";
+import { requireUser } from "@/lib/auth";
 import { formatCurrency } from "@/lib/format";
-import { balanceFor, hasReachedInvoiceLimit } from "@/lib/invoices";
-import { getCurrentPlan } from "@/lib/plan";
+import { balanceFor, isOverInvoiceLimit } from "@/lib/invoices";
+import { planById } from "@/lib/plan";
+import { getInvoices, invoiceCountThisMonth } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Invoices",
 };
 
-export default function InvoicesPage() {
-  const plan = getCurrentPlan();
-  const limitReached = hasReachedInvoiceLimit(plan);
+export default async function InvoicesPage() {
+  const user = await requireUser();
+  const [invoices, monthCount] = await Promise.all([
+    getInvoices(user.id),
+    invoiceCountThisMonth(user.id),
+  ]);
+  const plan = planById(user.planId);
+  const limitReached = isOverInvoiceLimit(plan, monthCount);
   const outstanding = invoices
     .filter((i) => i.status !== "paid" && i.status !== "cancelled")
     .reduce((sum, i) => sum + balanceFor(i), 0);
@@ -46,7 +52,7 @@ export default function InvoicesPage() {
         />
       ) : null}
 
-      <InvoicesTable />
+      <InvoicesTable invoices={invoices} />
     </>
   );
 }

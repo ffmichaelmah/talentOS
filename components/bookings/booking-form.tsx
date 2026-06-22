@@ -14,9 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { clients, currentUser } from "@/data";
 import { BOOKING_STAGE_LABELS, BOOKING_STAGES } from "@/lib/bookings";
 import { formatCurrency } from "@/lib/format";
+import type { Client } from "@/types";
 import type { BookingStage } from "@/types";
 
 function num(value: string): number {
@@ -50,11 +50,16 @@ function Field({
   );
 }
 
-const clientItems: Record<string, string> = Object.fromEntries(
-  clients.map((c) => [c.id, c.company ?? c.name])
-);
-
-export function BookingForm() {
+export function BookingForm({
+  clients,
+  currency,
+}: {
+  clients: Client[];
+  currency: string;
+}) {
+  const clientItems: Record<string, string> = Object.fromEntries(
+    clients.map((c) => [c.id, c.company ?? c.name])
+  );
   const [clientId, setClientId] = React.useState(clients[0]?.id ?? "");
   const [stage, setStage] = React.useState<BookingStage>("inquiry");
   const [fee, setFee] = React.useState("");
@@ -147,7 +152,7 @@ export function BookingForm() {
           <Field label="Balance (auto)">
             <Input
               readOnly
-              value={formatCurrency(balance, currentUser.currency)}
+              value={formatCurrency(balance, currency)}
               className="bg-muted/50"
             />
           </Field>

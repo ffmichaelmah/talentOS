@@ -1,15 +1,31 @@
 import { StatusBadge } from "@/components/ui/status-badge";
-import { currentUser } from "@/data";
 import { formatCurrency, formatDate } from "@/lib/format";
-import { balanceFor, clientFor } from "@/lib/invoices";
-import type { Invoice } from "@/types";
+import { balanceFor } from "@/lib/invoices";
+import type { Client, Invoice } from "@/types";
+
+export interface DocumentParty {
+  displayName: string;
+  businessName?: string | null;
+  name: string;
+  address?: string | null;
+  email: string;
+  phone?: string | null;
+  paymentDetails?: string | null;
+}
 
 /**
  * Clean, print-ready invoice layout. Pure markup so the same component can
  * back the on-screen detail view and (later) the real PDF export.
  */
-export function InvoiceDocument({ invoice }: { invoice: Invoice }) {
-  const client = clientFor(invoice);
+export function InvoiceDocument({
+  invoice,
+  user,
+  client,
+}: {
+  invoice: Invoice;
+  user: DocumentParty;
+  client: Client | null;
+}) {
   const balance = balanceFor(invoice);
 
   return (
@@ -24,10 +40,10 @@ export function InvoiceDocument({ invoice }: { invoice: Invoice }) {
         </div>
         <div className="text-right">
           <p className="text-lg font-semibold tracking-tight">
-            {currentUser.displayName}
+            {user.displayName}
           </p>
           <p className="text-sm text-muted-foreground">
-            {currentUser.businessName}
+            {user.businessName}
           </p>
           <div className="mt-2">
             <StatusBadge status={invoice.status} />
@@ -41,11 +57,11 @@ export function InvoiceDocument({ invoice }: { invoice: Invoice }) {
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             From
           </p>
-          <p className="font-medium">{currentUser.businessName}</p>
-          <p className="text-muted-foreground">{currentUser.name}</p>
-          <p className="text-muted-foreground">{currentUser.address}</p>
-          <p className="text-muted-foreground">{currentUser.email}</p>
-          <p className="text-muted-foreground">{currentUser.phone}</p>
+          <p className="font-medium">{user.businessName}</p>
+          <p className="text-muted-foreground">{user.name}</p>
+          <p className="text-muted-foreground">{user.address}</p>
+          <p className="text-muted-foreground">{user.email}</p>
+          <p className="text-muted-foreground">{user.phone}</p>
         </div>
         <div className="space-y-1 text-sm">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -177,13 +193,13 @@ export function InvoiceDocument({ invoice }: { invoice: Invoice }) {
 
       {/* Payment details + terms */}
       <section className="space-y-4 border-t border-border/60 pt-6 text-sm">
-        {currentUser.paymentDetails ? (
+        {user.paymentDetails ? (
           <div>
             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               Payment details
             </p>
             <p className="mt-1 text-muted-foreground">
-              {currentUser.paymentDetails}
+              {user.paymentDetails}
             </p>
           </div>
         ) : null}
@@ -216,8 +232,8 @@ export function InvoiceDocument({ invoice }: { invoice: Invoice }) {
       </section>
 
       <footer className="mt-8 border-t border-border/60 pt-4 text-center text-xs text-muted-foreground">
-        Thank you for the booking — {currentUser.displayName} ·{" "}
-        {currentUser.email}
+        Thank you for the booking — {user.displayName} ·{" "}
+        {user.email}
       </footer>
     </article>
   );

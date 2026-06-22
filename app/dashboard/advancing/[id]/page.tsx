@@ -8,26 +8,20 @@ import { AdvanceDocument } from "@/components/advancing/advance-document";
 import { ShareLink } from "@/components/advancing/share-link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { advanceForms } from "@/data";
+import { requireUser } from "@/lib/auth";
 import { advanceTypeLabel, clientDisplayName } from "@/lib/advancing";
+import { getAdvanceFormById } from "@/lib/queries";
 
-export async function generateMetadata(
-  props: PageProps<"/dashboard/advancing/[id]">
-): Promise<Metadata> {
-  const { id } = await props.params;
-  const form = advanceForms.find((f) => f.id === id);
-  return { title: form ? form.title : "Advance form" };
-}
-
-export function generateStaticParams() {
-  return advanceForms.map((f) => ({ id: f.id }));
-}
+export const metadata: Metadata = {
+  title: "Advance form",
+};
 
 export default async function AdvanceDetailPage(
   props: PageProps<"/dashboard/advancing/[id]">
 ) {
   const { id } = await props.params;
-  const form = advanceForms.find((f) => f.id === id);
+  const user = await requireUser();
+  const form = await getAdvanceFormById(user.id, id);
   if (!form) notFound();
 
   return (

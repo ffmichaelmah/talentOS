@@ -30,26 +30,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  bookings,
-  clients,
-  contracts,
-  creditTransactions,
-  currentUser,
-  invoices,
-} from "@/data";
+import { requireUser } from "@/lib/auth";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/format";
-import { canUseAdvancing, canUseContracts, getCurrentPlan } from "@/lib/plan";
+import { canUseAdvancing, canUseContracts, planById } from "@/lib/plan";
+import {
+  getBookings,
+  getClients,
+  getContracts,
+  getCreditTransactions,
+  getInvoices,
+} from "@/lib/queries";
 import type { Invoice } from "@/types";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-export default function DashboardOverviewPage() {
-  const plan = getCurrentPlan();
+export default async function DashboardOverviewPage() {
+  const user = await requireUser();
+  const plan = planById(user.planId);
   const contractsUnlocked = canUseContracts(plan);
   const advancingUnlocked = canUseAdvancing(plan);
+
+  const [invoices, bookings, contracts, clients, creditTransactions] =
+    await Promise.all([
+      getInvoices(user.id),
+      getBookings(user.id),
+      getContracts(user.id),
+      getClients(user.id),
+      getCreditTransactions(user.id),
+    ]);
 
   const paidInvoices = invoices.filter((i) => i.status === "paid");
   const pendingInvoices = invoices.filter((i) =>
@@ -68,11 +78,6 @@ export default function DashboardOverviewPage() {
   const recentCredits = [...creditTransactions]
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, 4);
-
-  const clientName = (id: string) => {
-    const c = clients.find((x) => x.id === id);
-    return c?.company ?? c?.name ?? "—";
-  };
 
   return (
     <>
@@ -94,7 +99,7 @@ export default function DashboardOverviewPage() {
           value={String(paidInvoices.length)}
           hint={formatCurrency(
             paidInvoices.reduce((s, i) => s + i.total, 0),
-            currentUser.currency
+            user.currency
           )}
           icon={CircleCheck}
         />
@@ -103,7 +108,7 @@ export default function DashboardOverviewPage() {
           value={String(pendingInvoices.length)}
           hint={`${formatCurrency(
             pendingInvoices.reduce((s, i) => s + (i.total - i.amountPaid), 0),
-            currentUser.currency
+            user.currency
           )} outstanding`}
           icon={Clock}
         />
@@ -121,13 +126,13 @@ export default function DashboardOverviewPage() {
         />
         <StatCard
           label="Credit balance"
-          value={String(currentUser.creditBalance)}
+          value={String(user.creditBalance)}
           hint={`of ${plan.includedCredits} monthly credits`}
           icon={Coins}
         />
         <StatCard
           label="Monthly earnings"
-          value={formatCurrency(monthlyEarnings, currentUser.currency)}
+          value={formatCurrency(monthlyEarnings, user.currency)}
           hint="Collected this month"
           icon={TrendingUp}
         />
@@ -203,7 +208,7 @@ export default function DashboardOverviewPage() {
                   <span className="font-medium">{i.invoiceNumber}</span>
                 ),
               },
-              { header: "Client", cell: (i) => clientName(i.clientId) },
+              { header: "Client", cell: (i) => i.clientName ?? "—" },
               { header: "Due", cell: (i) => formatDate(i.dueDate) },
               {
                 header: "Amount",
@@ -276,7 +281,7 @@ export default function DashboardOverviewPage() {
                     {contract.title}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {clientName(contract.clientId)} ·{" "}
+                    {contract.clientName ?? "—"} ·{" "}
                     {formatCurrency(contract.fee, contract.currency)}
                   </p>
                 </div>
@@ -295,7 +300,7 @@ export default function DashboardOverviewPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <CreditMeter
-              balance={currentUser.creditBalance}
+              balance={user.creditBalance}
               included={plan.includedCredits}
               planName={plan.name}
             />

@@ -15,9 +15,18 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Textarea } from "@/components/ui/textarea";
-import { clients, currentUser } from "@/data";
 import { formatCurrency } from "@/lib/format";
-import { nextInvoiceNumber } from "@/lib/invoices";
+import type { Client } from "@/types";
+
+export interface InvoiceTalent {
+  businessName?: string | null;
+  name: string;
+  email: string;
+  phone?: string | null;
+  address?: string | null;
+  paymentDetails?: string | null;
+  currency: string;
+}
 
 const currencies = ["USD", "EUR", "GBP", "MYR", "SGD", "AUD"] as const;
 
@@ -50,18 +59,24 @@ function Field({
   );
 }
 
-export function InvoiceForm() {
+export function InvoiceForm({
+  clients,
+  defaultNumber,
+  talent,
+}: {
+  clients: Client[];
+  defaultNumber: string;
+  talent: InvoiceTalent;
+}) {
   // 1. Talent details
   const [talentName, setTalentName] = React.useState(
-    currentUser.businessName ?? currentUser.name
+    talent.businessName ?? talent.name
   );
-  const [talentEmail, setTalentEmail] = React.useState(currentUser.email);
-  const [talentPhone, setTalentPhone] = React.useState(currentUser.phone ?? "");
-  const [talentAddress, setTalentAddress] = React.useState(
-    currentUser.address ?? ""
-  );
+  const [talentEmail, setTalentEmail] = React.useState(talent.email);
+  const [talentPhone, setTalentPhone] = React.useState(talent.phone ?? "");
+  const [talentAddress, setTalentAddress] = React.useState(talent.address ?? "");
   const [paymentDetails, setPaymentDetails] = React.useState(
-    currentUser.paymentDetails ?? ""
+    talent.paymentDetails ?? ""
   );
 
   // 2. Client details
@@ -72,12 +87,12 @@ export function InvoiceForm() {
   const [clientAddress, setClientAddress] = React.useState("");
 
   // 3. Invoice details
-  const [invoiceNumber, setInvoiceNumber] = React.useState(nextInvoiceNumber());
+  const [invoiceNumber, setInvoiceNumber] = React.useState(defaultNumber);
   const [invoiceDate, setInvoiceDate] = React.useState(
     new Date().toISOString().slice(0, 10)
   );
   const [dueDate, setDueDate] = React.useState("");
-  const [currency, setCurrency] = React.useState(currentUser.currency);
+  const [currency, setCurrency] = React.useState(talent.currency);
   const [status, setStatus] = React.useState("draft");
 
   // 4. Job details

@@ -5,13 +5,17 @@ import { Plus } from "lucide-react";
 import { BookingsTable } from "@/components/bookings/bookings-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { bookings } from "@/data";
+import { requireUser } from "@/lib/auth";
+import { getBookings } from "@/lib/queries";
 
 export const metadata: Metadata = {
   title: "Bookings",
 };
 
-export default function BookingsPage() {
+export default async function BookingsPage() {
+  const user = await requireUser();
+  const bookings = await getBookings(user.id);
+
   return (
     <>
       <PageHeader
@@ -27,7 +31,7 @@ export default function BookingsPage() {
           </Button>
         }
       />
-      <BookingsTable />
+      <BookingsTable bookings={bookings} />
     </>
   );
 }

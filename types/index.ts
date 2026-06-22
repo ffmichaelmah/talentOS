@@ -119,6 +119,9 @@ export interface Invoice {
   paymentTerms?: string;
   cancellationTerms?: string;
   notes?: string;
+  /** Enrichment resolved by the query layer for display. */
+  clientName?: string;
+  eventName?: string;
 }
 
 /* -------------------------------- Contract ------------------------------- */
@@ -202,6 +205,8 @@ export interface Contract {
   /** Full document content for the detail / preview view. */
   details?: ContractDetails;
   createdAt: string;
+  /** Enrichment resolved by the query layer for display. */
+  clientName?: string;
 }
 
 /* -------------------------------- Booking -------------------------------- */
@@ -259,6 +264,11 @@ export interface Booking {
   advanceFormId?: string;
   notes?: string;
   createdAt: string;
+  /** Enrichment resolved by the query layer for display. */
+  clientName?: string;
+  invoiceStatus?: string;
+  contractStatus?: string;
+  advanceStatus?: string;
 }
 
 /* ------------------------------ Advance Form ----------------------------- */
@@ -352,6 +362,8 @@ export interface AdvanceForm {
   campaignDetails?: CampaignAdvanceDetails;
   createdAt: string;
   updatedAt: string;
+  /** Enrichment resolved by the query layer for display. */
+  clientName?: string;
 }
 
 /* --------------------------- Credit Transaction -------------------------- */
@@ -372,6 +384,9 @@ export interface CreditTransaction {
     id: string;
   };
   createdAt: string;
+  /** Enrichment resolved by the query layer for display. */
+  relatedLabel?: string;
+  relatedHref?: string;
 }
 
 /* ----------------------------- Document Template ------------------------- */

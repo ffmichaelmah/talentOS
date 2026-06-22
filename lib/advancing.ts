@@ -1,4 +1,3 @@
-import { advanceForms, clients } from "@/data";
 import type { AdvanceCategory, AdvanceForm, AdvanceFormType } from "@/types";
 
 export const ADVANCE_CATEGORY_LABELS: Record<AdvanceCategory, string> = {
@@ -38,13 +37,8 @@ export function advanceTypeLabel(type: AdvanceFormType): string {
   return ADVANCE_TYPE_LABELS[type];
 }
 
-export function clientFor(form: AdvanceForm) {
-  return clients.find((c) => c.id === form.clientId);
-}
-
 export function clientDisplayName(form: AdvanceForm): string {
-  const client = clientFor(form);
-  return client?.company ?? client?.name ?? "—";
+  return form.clientName ?? "—";
 }
 
 /** Human label for the share-link state shown in the list. */
@@ -56,5 +50,3 @@ export function shareStatusLabel(form: AdvanceForm): {
   if (form.shareViewed) return { label: "Opened by client", tone: "viewed" };
   return { label: "Link active", tone: "active" };
 }
-
-export { advanceForms };

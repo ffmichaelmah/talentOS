@@ -17,14 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { bookings } from "@/data";
 import {
   BOOKING_STAGE_LABELS,
   BOOKING_STAGES,
-  advanceFor,
   clientDisplayName,
-  contractFor,
-  invoiceFor,
 } from "@/lib/bookings";
 import { formatCurrency, formatDate } from "@/lib/format";
 import type { Booking, BookingStage } from "@/types";
@@ -53,7 +49,7 @@ function timeRange(b: Booking): string {
   return `${fmt(start)} – ${fmt(end)}`;
 }
 
-export function BookingsTable() {
+export function BookingsTable({ bookings }: { bookings: Booking[] }) {
   const [filter, setFilter] = React.useState<Filter>("all");
   const [query, setQuery] = React.useState("");
 
@@ -174,13 +170,13 @@ export function BookingsTable() {
                       <StatusBadge status={booking.stage} />
                     </TableCell>
                     <TableCell>
-                      <DocBadge status={invoiceFor(booking)?.status} />
+                      <DocBadge status={booking.invoiceStatus} />
                     </TableCell>
                     <TableCell>
-                      <DocBadge status={contractFor(booking)?.status} />
+                      <DocBadge status={booking.contractStatus} />
                     </TableCell>
                     <TableCell>
-                      <DocBadge status={advanceFor(booking)?.status} />
+                      <DocBadge status={booking.advanceStatus} />
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

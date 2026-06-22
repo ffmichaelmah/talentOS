@@ -17,10 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { contracts } from "@/data";
 import { clientDisplayName, contractTypeLabel } from "@/lib/contracts";
 import { formatCurrency, formatDate } from "@/lib/format";
-import type { ContractStatus } from "@/types";
+import type { Contract, ContractStatus } from "@/types";
 import { cn } from "@/lib/utils";
 
 type Filter = "all" | ContractStatus;
@@ -35,7 +34,7 @@ const filters: { value: Filter; label: string }[] = [
   { value: "cancelled", label: "Cancelled" },
 ];
 
-export function ContractsTable() {
+export function ContractsTable({ contracts }: { contracts: Contract[] }) {
   const [filter, setFilter] = React.useState<Filter>("all");
   const [query, setQuery] = React.useState("");
 

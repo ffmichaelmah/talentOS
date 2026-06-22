@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Textarea } from "@/components/ui/textarea";
-import { clients, currentUser } from "@/data";
 import {
   CONTRACT_REFERENCE_DISCLAIMER,
   CONTRACT_TYPE_LABELS,
@@ -27,7 +26,14 @@ import {
   contractTypeLabel,
 } from "@/lib/contracts";
 import { formatCurrency } from "@/lib/format";
-import type { ContractType } from "@/types";
+import type { Client, ContractType } from "@/types";
+
+export interface ContractFormTalent {
+  name: string;
+  businessName?: string | null;
+  email: string;
+  currency: string;
+}
 
 const NO_CLIENT = "none";
 
@@ -62,14 +68,20 @@ function Field({
   );
 }
 
-export function ContractForm() {
+export function ContractForm({
+  clients,
+  talent,
+}: {
+  clients: Client[];
+  talent: ContractFormTalent;
+}) {
   // 1. Contract type
   const [contractType, setContractType] =
     React.useState<ContractType>("dj-booking");
 
   // 2. Parties
   const [talentName, setTalentName] = React.useState(
-    `${currentUser.name}${currentUser.businessName ? ` (${currentUser.businessName})` : ""}`
+    `${talent.name}${talent.businessName ? ` (${talent.businessName})` : ""}`
   );
   const [clientName, setClientName] = React.useState("");
   const [clientCompany, setClientCompany] = React.useState("");
@@ -106,7 +118,7 @@ export function ContractForm() {
     "Neither party is liable for failure to perform due to events beyond reasonable control. Deposit is refunded if the event cannot proceed."
   );
 
-  const currency = currentUser.currency;
+  const currency = talent.currency;
   const feeAmount = num(fee);
   const depositAmount = num(deposit);
   const balanceAmount = Math.max(feeAmount - depositAmount, 0);

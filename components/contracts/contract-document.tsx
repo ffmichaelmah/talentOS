@@ -1,12 +1,16 @@
 import { StatusBadge } from "@/components/ui/status-badge";
-import { currentUser } from "@/data";
 import { formatCurrency, formatDate } from "@/lib/format";
 import {
   CONTRACT_REFERENCE_DISCLAIMER,
-  clientFor,
   contractTypeLabel,
 } from "@/lib/contracts";
-import type { Contract } from "@/types";
+import type { Client, Contract } from "@/types";
+
+export interface ContractTalent {
+  name: string;
+  businessName?: string | null;
+  email: string;
+}
 
 export interface ContractView {
   title: string;
@@ -36,19 +40,24 @@ export interface ContractView {
   technicalRider?: string;
   forceMajeure?: string;
   signedAt?: string;
+  talentEmail?: string;
 }
 
 /** Normalize a stored contract (+ its client) into the document view model. */
-export function contractToView(contract: Contract): ContractView {
-  const client = clientFor(contract);
+export function contractToView(
+  contract: Contract,
+  talent: ContractTalent,
+  client: Client | null
+): ContractView {
   const d = contract.details;
   return {
     title: contract.title,
     typeLabel: contractTypeLabel(contract.contractType),
     status: contract.status,
+    talentEmail: talent.email,
     talentLegalName:
       d?.talentLegalName ??
-      `${currentUser.name}${currentUser.businessName ? ` (${currentUser.businessName})` : ""}`,
+      `${talent.name}${talent.businessName ? ` (${talent.businessName})` : ""}`,
     clientLegalName: d?.clientLegalName ?? client?.name,
     clientCompany: d?.clientCompany ?? client?.company,
     clientEmail: d?.clientEmail ?? client?.email,
@@ -123,7 +132,7 @@ export function ContractDocument({ view }: { view: ContractView }) {
             Talent
           </p>
           <p className="font-medium">{view.talentLegalName}</p>
-          <p className="text-muted-foreground">{currentUser.email}</p>
+          <p className="text-muted-foreground">{view.talentEmail}</p>
         </div>
         <div className="space-y-1 text-sm">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">

@@ -1,5 +1,3 @@
-import { advanceForms, contracts, creditTransactions, currentUser, invoices } from "@/data";
-import { getCurrentPlan } from "@/lib/plan";
 import type { CreditTransaction } from "@/types";
 
 /** Per-action credit prices shown in the "what uses credits" reference. */
@@ -21,10 +19,7 @@ export interface CreditStats {
   low: boolean;
 }
 
-export function creditStats(): CreditStats {
-  const plan = getCurrentPlan();
-  const balance = currentUser.creditBalance;
-  const included = plan.includedCredits;
+export function creditStats(balance: number, included: number): CreditStats {
   const used = Math.min(Math.max(included - balance, 0), included);
   const remaining = balance;
   const usedPercent = included > 0 ? Math.round((used / included) * 100) : 0;
@@ -37,35 +32,12 @@ export function transactionStatus(tx: CreditTransaction): string {
   return tx.type === "refund" ? "refunded" : "completed";
 }
 
-/** Resolve a transaction's related document to a label + link. */
+/** Related document label + link, resolved by the query layer. */
 export function relatedDocument(
   tx: CreditTransaction
 ): { label: string; href: string } | undefined {
-  const ref = tx.relatedDocument;
-  if (!ref) return undefined;
-  if (ref.kind === "invoice") {
-    const inv = invoices.find((i) => i.id === ref.id);
-    return {
-      label: inv?.invoiceNumber ?? "Invoice",
-      href: `/dashboard/invoices/${ref.id}`,
-    };
+  if (tx.relatedLabel && tx.relatedHref) {
+    return { label: tx.relatedLabel, href: tx.relatedHref };
   }
-  if (ref.kind === "contract") {
-    const c = contracts.find((x) => x.id === ref.id);
-    return {
-      label: c?.title ?? "Contract",
-      href: `/dashboard/contracts/${ref.id}`,
-    };
-  }
-  const a = advanceForms.find((x) => x.id === ref.id);
-  return {
-    label: a?.reference ?? a?.title ?? "Advance form",
-    href: `/dashboard/advancing/${ref.id}`,
-  };
-}
-
-export function creditHistory(): CreditTransaction[] {
-  return [...creditTransactions].sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt)
-  );
+  return undefined;
 }

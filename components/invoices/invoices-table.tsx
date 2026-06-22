@@ -17,9 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { invoices } from "@/data";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { balanceFor, clientDisplayName, eventNameFor } from "@/lib/invoices";
+import type { Invoice } from "@/types";
 import { cn } from "@/lib/utils";
 
 type Filter = "all" | "draft" | "sent" | "paid" | "overdue";
@@ -39,7 +39,7 @@ function matchesFilter(status: string, filter: Filter): boolean {
   return status === filter;
 }
 
-export function InvoicesTable() {
+export function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
   const [filter, setFilter] = React.useState<Filter>("all");
   const [query, setQuery] = React.useState("");
 
