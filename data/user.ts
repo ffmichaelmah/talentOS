@@ -14,7 +14,7 @@ export const currentUser: User = {
     "Bank transfer — Pacific West Bank · Acct 0042-7781-3309 · Routing 122000247 · PayPal: pay@djnova.live",
   location: "Los Angeles, CA",
   currency: "USD",
-  creditBalance: 2,
-  planId: "plan-free",
+  creditBalance: 184,
+  planId: "plan-pro",
   createdAt: "2025-09-12T18:24:00Z",
 };
