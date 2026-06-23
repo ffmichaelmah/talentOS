@@ -20,8 +20,15 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-  // Reset the demo account (cascades to all related rows).
-  await prisma.user.deleteMany({ where: { email: currentUser.email } });
+  // Idempotent: skip when the demo account already exists so production
+  // redeploys don't wipe data. Use `npm run db:reset` to force a fresh seed.
+  const existing = await prisma.user.findUnique({
+    where: { email: currentUser.email },
+  });
+  if (existing) {
+    console.log("Demo user already exists — skipping seed.");
+    return;
+  }
 
   const passwordHash = await bcrypt.hash("demo1234", 10);
   const userId = currentUser.id;
