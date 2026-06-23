@@ -6,7 +6,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { createClientAction } from "@/app/actions/clients";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,9 +50,13 @@ function Field({
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending}>
+    <button
+      type="submit"
+      className={buttonVariants()}
+      disabled={pending}
+    >
       {pending ? "Adding…" : "Add client"}
-    </Button>
+    </button>
   );
 }
 

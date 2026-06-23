@@ -12,7 +12,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -48,15 +47,13 @@ export function UserMenu({ user }: { user: ChromeUser }) {
         </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
-        <DropdownMenuLabel>
-          <p className="font-medium">{user.name}</p>
-          <p className="text-xs font-normal text-muted-foreground">
-            {user.email}
-          </p>
+        <div className="px-2 py-1.5">
+          <p className="text-sm font-medium">{user.name}</p>
+          <p className="text-xs text-muted-foreground">{user.email}</p>
           <Badge variant="secondary" className="mt-1.5">
             {user.planName} plan
           </Badge>
-        </DropdownMenuLabel>
+        </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/dashboard/settings" />}>
           <UserRound className="size-4" />
@@ -71,12 +68,10 @@ export function UserMenu({ user }: { user: ChromeUser }) {
           Credits
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <form action={logoutAction}>
-          <DropdownMenuItem render={<button type="submit" className="w-full" />}>
-            <LogOut className="size-4" />
-            Log out
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem onClick={() => logoutAction()}>
+          <LogOut className="size-4" />
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
