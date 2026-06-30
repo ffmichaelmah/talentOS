@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --skip-generate && tsx prisma/seed.ts && next build",
+    "build": "node scripts/prepare-db.mjs && prisma generate && prisma db push --skip-generate && tsx prisma/seed.ts && next build",
     "build:app": "next build",
     "start": "next start",
     "lint": "eslint",

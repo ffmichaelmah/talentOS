@@ -6,8 +6,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Local dev uses SQLite (zero setup). The Vercel build swaps this to
+// "postgresql" via scripts/prepare-db.mjs (see the "build" script).
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
