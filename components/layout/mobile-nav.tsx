@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 
-import { CreditMeter } from "@/components/cards/credit-meter";
 import { Logo } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,13 +17,7 @@ import {
 import { dashboardNav, dashboardSecondaryNav } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
-export function MobileNav({
-  creditBalance = 0,
-  includedCredits = 0,
-}: {
-  creditBalance?: number;
-  includedCredits?: number;
-}) {
+export function MobileNav() {
   const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
 
@@ -69,13 +62,6 @@ export function MobileNav({
             );
           })}
         </nav>
-        <div className="border-t border-border/60 p-4">
-          <CreditMeter
-            balance={creditBalance}
-            included={includedCredits}
-            compact
-          />
-        </div>
       </SheetContent>
     </Sheet>
   );

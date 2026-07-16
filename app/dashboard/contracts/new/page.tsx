@@ -8,7 +8,7 @@ import { canUseContracts, planById } from "@/lib/plan";
 import { getClients } from "@/lib/queries";
 
 export const metadata: Metadata = {
-  title: "New contract",
+  title: "New agreement",
 };
 
 export default async function NewContractPage() {
@@ -19,7 +19,7 @@ export default async function NewContractPage() {
   return (
     <>
       <PageHeader
-        title="New contract"
+        title="New agreement"
         description="Guided generator — fill in the details and the preview builds as you go."
       />
       {unlocked ? (

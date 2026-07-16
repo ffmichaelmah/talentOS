@@ -35,7 +35,7 @@ const statusVariant: Record<
 
 const kindLabels: Record<DocumentTemplate["kind"], string> = {
   invoice: "Invoice",
-  contract: "Contract",
+  contract: "Agreement",
   "advance-form": "Advance form",
 };
 
@@ -104,7 +104,7 @@ export default function AdminTemplatesPage() {
     <>
       <PageHeader
         title="Templates"
-        description="The invoice, contract, and advance form templates available to users."
+        description="The invoice, agreement, and advance form templates available to users."
         actions={
           <>
             <UploadTemplateDialog />
@@ -126,7 +126,7 @@ export default function AdminTemplatesPage() {
             Invoices ({byKind("invoice").length})
           </TabsTrigger>
           <TabsTrigger value="contract">
-            Contracts ({byKind("contract").length})
+            Agreements ({byKind("contract").length})
           </TabsTrigger>
           <TabsTrigger value="advance-form">
             Advancing ({byKind("advance-form").length})

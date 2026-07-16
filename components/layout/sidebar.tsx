@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { CreditMeter } from "@/components/cards/credit-meter";
 import { Logo } from "@/components/layout/logo";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,14 +22,14 @@ const variants = {
     secondaryNav: dashboardSecondaryNav,
     homeHref: "/dashboard",
     badge: undefined as string | undefined,
-    showCredits: true,
+    showPlan: true,
   },
   admin: {
     nav: adminNav,
     secondaryNav: adminSecondaryNav,
     homeHref: "/admin",
     badge: "Admin" as string | undefined,
-    showCredits: false,
+    showPlan: false,
   },
 };
 
@@ -54,17 +53,15 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 
 export function Sidebar({
   variant = "app",
-  creditBalance = 0,
-  includedCredits = 0,
   planName = "Free",
+  isTopPlan = false,
 }: {
   variant?: "app" | "admin";
-  creditBalance?: number;
-  includedCredits?: number;
   planName?: string;
+  /** Hides the upgrade link once the user is already on the top plan. */
+  isTopPlan?: boolean;
 }) {
-  const { nav, secondaryNav, homeHref, badge, showCredits } =
-    variants[variant];
+  const { nav, secondaryNav, homeHref, badge, showPlan } = variants[variant];
   const pathname = usePathname();
   // The section home ("/admin", "/dashboard") only matches exactly, so it
   // doesn't stay highlighted while a sibling like "/dashboard/invoices" is open.
@@ -84,22 +81,17 @@ export function Sidebar({
           <NavLink key={item.href} item={item} active={isActive(item.href)} />
         ))}
         <div className="mt-auto space-y-2 pt-4">
-          {showCredits ? (
-            <div className="space-y-3 rounded-xl border bg-card p-3.5">
-              <CreditMeter
-                balance={creditBalance}
-                included={includedCredits}
-                compact
-              />
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary">{planName} plan</Badge>
+          {showPlan ? (
+            <div className="flex items-center justify-between rounded-xl border bg-card p-3.5">
+              <Badge variant="secondary">{planName} plan</Badge>
+              {!isTopPlan ? (
                 <Link
                   href="/dashboard/billing"
                   className="text-xs font-medium text-primary hover:underline"
                 >
                   Upgrade
                 </Link>
-              </div>
+              ) : null}
             </div>
           ) : null}
           {secondaryNav.map((item) => (

@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
       <EmptyStateCard
         icon={Users}
         title="User management coming soon"
-        description="This view will list registered talents with their plan, credit balance, and account status."
+        description="This view will list registered talents with their plan and account status."
       />
     </>
   );

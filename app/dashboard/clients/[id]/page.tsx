@@ -241,17 +241,17 @@ export default async function ClientDetailPage(
           </CardContent>
         </Card>
 
-        {/* Contract history */}
+        {/* Agreement history */}
         <Card className="shadow-xs">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileSignature className="size-4 text-primary" /> Contract history
+              <FileSignature className="size-4 text-primary" /> Agreement history
             </CardTitle>
           </CardHeader>
           <CardContent>
             {clientContracts.length === 0 ? (
               <p className="py-4 text-sm text-muted-foreground">
-                No contracts yet.
+                No agreements yet.
               </p>
             ) : (
               <div className="space-y-3">

@@ -26,7 +26,7 @@ import type { TemplateKind } from "@/types";
 
 const kindLabels: Record<TemplateKind, string> = {
   invoice: "Invoice",
-  contract: "Contract",
+  contract: "Agreement",
   "advance-form": "Advance form",
 };
 

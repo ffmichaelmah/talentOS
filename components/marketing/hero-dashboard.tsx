@@ -1,7 +1,7 @@
 import {
+  BadgeCheck,
   Calendar,
   ClipboardList,
-  Coins,
   FileSignature,
   LayoutDashboard,
   Receipt,
@@ -18,7 +18,7 @@ const stats = [
     icon: Receipt,
   },
   {
-    label: "Contracts",
+    label: "Agreements",
     value: "4",
     hint: "signed",
     icon: FileSignature,
@@ -41,7 +41,7 @@ const sidebarItems = [
   { label: "Dashboard", icon: LayoutDashboard, active: true },
   { label: "Bookings", icon: Calendar },
   { label: "Invoices", icon: Receipt },
-  { label: "Contracts", icon: FileSignature },
+  { label: "Agreements", icon: FileSignature },
   { label: "Advancing", icon: ClipboardList },
 ];
 
@@ -102,8 +102,8 @@ export function HeroDashboard() {
                 </p>
               </div>
               <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-2.5 py-1 text-[11px] font-medium">
-                <Coins className="size-3.5 text-primary" />
-                42 credits
+                <BadgeCheck className="size-3.5 text-primary" />
+                Pro plan
               </div>
             </div>
 

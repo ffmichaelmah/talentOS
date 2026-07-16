@@ -19,7 +19,7 @@ export default function AdminPlansPage() {
       <EmptyStateCard
         icon={CreditCard}
         title="Plan management coming soon"
-        description="This view will manage pricing, included credits, limits, and feature flags per plan."
+        description="This view will manage pricing, limits, and feature flags per plan."
       />
     </>
   );

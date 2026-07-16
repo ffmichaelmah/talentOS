@@ -5,7 +5,7 @@ import { Logo } from "@/components/layout/logo";
 
 const highlights = [
   "Send your first professional invoice in minutes",
-  "Contracts and advance forms built for talent",
+  "Agreements and advance forms built for talent",
   "Free forever — no credit card required",
 ];
 

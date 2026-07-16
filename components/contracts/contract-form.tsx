@@ -171,10 +171,10 @@ export function ContractForm({
   return (
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-5">
-        {/* 1. Contract type */}
+        {/* 1. Agreement type */}
         <Card className="shadow-xs">
           <CardHeader>
-            <CardTitle>1 · Contract type</CardTitle>
+            <CardTitle>1 · Agreement type</CardTitle>
           </CardHeader>
           <CardContent>
             <Field label="Type of agreement">
@@ -458,7 +458,7 @@ export function ContractForm({
                 Talent signature
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
-                Signed digitally when the contract is countersigned.
+                Signed digitally when the agreement is countersigned.
               </p>
             </div>
             <div>

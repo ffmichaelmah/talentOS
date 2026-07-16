@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 
 import { BookingForm } from "@/components/bookings/booking-form";
+import { BookingsLocked } from "@/components/bookings/bookings-locked";
 import { PageHeader } from "@/components/layout/page-header";
 import { requireUser } from "@/lib/auth";
+import { canUseBookings, planById } from "@/lib/plan";
 import { getClients } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -11,7 +13,8 @@ export const metadata: Metadata = {
 
 export default async function NewBookingPage() {
   const user = await requireUser();
-  const clients = await getClients(user.id);
+  const unlocked = canUseBookings(planById(user.planId));
+  const clients = unlocked ? await getClients(user.id) : [];
 
   return (
     <>
@@ -19,7 +22,11 @@ export default async function NewBookingPage() {
         title="Add booking"
         description="Log a gig and track it through your pipeline."
       />
-      <BookingForm clients={clients} currency={user.currency} />
+      {unlocked ? (
+        <BookingForm clients={clients} currency={user.currency} />
+      ) : (
+        <BookingsLocked />
+      )}
     </>
   );
 }

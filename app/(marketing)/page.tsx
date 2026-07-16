@@ -5,10 +5,10 @@ import {
   Building2,
   CalendarPlus,
   ClipboardList,
-  Coins,
   Disc3,
   Download,
   FileSignature,
+  Layers,
   Mic,
   Music,
   Palette,
@@ -31,7 +31,7 @@ import { Button } from "@/components/ui/button";
 
 const painPoints = [
   "No proper invoice format",
-  "No contract template",
+  "No agreement template",
   "Unclear client terms",
   "Late payments",
   "Missing event details",
@@ -47,7 +47,7 @@ const solutions = [
   },
   {
     icon: FileSignature,
-    title: "Contract Templates",
+    title: "Agreement Templates",
     description: "Performance and collab agreements built for talent, ready to send.",
   },
   {
@@ -66,9 +66,9 @@ const solutions = [
     description: "See what's paid, pending, and overdue at a glance.",
   },
   {
-    icon: Coins,
-    title: "Credit-Based Tools",
-    description: "Pay for the documents you generate — or subscribe and stop counting.",
+    icon: Layers,
+    title: "Simple Plans",
+    description: "Start free, then upgrade to Standard or Pro as your business grows.",
   },
   {
     icon: Download,
@@ -96,7 +96,7 @@ const userTypes = [
 const workflow = [
   { icon: UserPlus, title: "Add client", description: "Save venue, brand, or promoter details once." },
   { icon: CalendarPlus, title: "Create booking", description: "Log the event, date, venue, and fee." },
-  { icon: FileSignature, title: "Generate contract", description: "Pick a template and send for signature." },
+  { icon: FileSignature, title: "Generate agreement", description: "Pick a template and send for signature." },
   { icon: Send, title: "Send invoice", description: "Bill the deposit and the balance professionally." },
   { icon: ClipboardList, title: "Collect advance details", description: "Gather timings, tech, and hospitality." },
   { icon: Wallet, title: "Track payment", description: "Know exactly what's been paid and what's due." },
@@ -129,7 +129,7 @@ export default function LandingPage() {
             Run your talent career like a real business.
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground text-pretty sm:text-xl">
-            Create professional invoices, contracts, and booking advance forms in
+            Create professional invoices, agreements, and booking advance forms in
             minutes — built for DJs, influencers, musicians, creators, and
             freelance talents.
           </p>

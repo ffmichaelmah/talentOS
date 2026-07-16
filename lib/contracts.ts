@@ -11,8 +11,7 @@ export const CONTRACT_REFERENCE_DISCLAIMER =
 export const CONTRACT_REFERENCE_DISCLAIMER_LONG =
   "This document is a template and does not replace legal advice. TalentOS " +
   "is not a law firm. Review the final document with a qualified legal " +
-  "professional before signing — contract legal review is available on Pro " +
-  "and Agency plans.";
+  "professional before signing.";
 
 /** Footer block appended to contract bodies generated from templates. */
 export const CONTRACT_BODY_NOTICE = `------------------------------------------------------------
@@ -23,7 +22,7 @@ qualified legal professional review it before signing.
 ------------------------------------------------------------`;
 
 export const CONTRACT_TYPE_LABELS: Record<ContractType, string> = {
-  "dj-booking": "DJ Booking Contract",
+  "dj-booking": "DJ Booking Agreement",
   "influencer-campaign": "Influencer Campaign Agreement",
   "music-performance": "Music Performance Agreement",
   "talent-appearance": "Talent Appearance Agreement",
@@ -37,7 +36,7 @@ export const CONTRACT_TYPES = Object.keys(
 ) as ContractType[];
 
 export function contractTypeLabel(type?: ContractType): string {
-  return type ? CONTRACT_TYPE_LABELS[type] : "Contract";
+  return type ? CONTRACT_TYPE_LABELS[type] : "Agreement";
 }
 
 export function clientDisplayName(contract: Contract): string {

@@ -99,7 +99,7 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent>
           <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-            Custom branding is available on Pro Plan and above.
+            Custom branding is available on Pro plan.
           </p>
         </CardContent>
       </Card>

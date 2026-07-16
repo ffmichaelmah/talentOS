@@ -7,9 +7,7 @@ const adminUser: ChromeUser = {
   displayName: "Admin",
   email: "admin@talentos.app",
   avatarUrl: null,
-  creditBalance: 0,
   planName: "Internal",
-  includedCredits: 0,
 };
 
 export default function AdminLayout({

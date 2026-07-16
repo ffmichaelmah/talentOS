@@ -7,25 +7,21 @@ import { SectionHeading } from "@/components/marketing/section-heading";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Simple, credit-based pricing for modern talents. Start free, then upgrade to Starter, Pro, or Agency as your bookings grow.",
+    "Simple, flat-rate pricing for modern talents. Start free, then upgrade to Standard or Pro as your business grows.",
 };
 
 const faqs = [
   {
-    q: "What are credits?",
-    a: "Each document you generate — an invoice, contract, or advance form — uses credits. Every plan includes a monthly allowance, and you can top up anytime.",
+    q: "What's the difference between Standard and Pro?",
+    a: "Standard covers invoicing and client management. Pro adds bookings, agreements, and advancing forms — the full pipeline from inquiry to signed, paid, and briefed.",
   },
   {
     q: "Can I change plans later?",
-    a: "Yes. Upgrade or downgrade whenever you like; your credits and limits adjust at the start of the next billing cycle.",
-  },
-  {
-    q: "Do unused credits roll over?",
-    a: "Your monthly credit allowance refreshes each cycle. Topped-up credits you purchase separately don't expire.",
+    a: "Yes. Upgrade or downgrade whenever you like; access to bookings, agreements, and advancing updates immediately.",
   },
   {
     q: "Is there a free plan?",
-    a: "Yes — the Free plan is free forever and includes everything you need to send your first professional invoice.",
+    a: "Yes — the Free plan lets you try TalentOS with a few invoices and clients before you upgrade.",
   },
 ];
 
@@ -41,7 +37,7 @@ export default function PricingPage() {
           <SectionHeading
             eyebrow="Pricing"
             title="Plans that grow with your bookings."
-            description="Start free and upgrade when you're ready. Every plan includes monthly credits for the documents you generate."
+            description="Start free and upgrade when you're ready. No credits to track — just the tools your plan includes."
           />
         </div>
       </section>

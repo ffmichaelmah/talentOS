@@ -136,7 +136,7 @@ export function BookingsTable({ bookings }: { bookings: Booking[] }) {
                   <TableHead className="text-right">Fee</TableHead>
                   <TableHead>Stage</TableHead>
                   <TableHead>Invoice</TableHead>
-                  <TableHead>Contract</TableHead>
+                  <TableHead>Agreement</TableHead>
                   <TableHead>Advance</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>

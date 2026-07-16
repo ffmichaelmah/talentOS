@@ -5,18 +5,18 @@ import {
   BadgeCheck,
   Calendar,
   CalendarPlus,
+  Check,
   CircleCheck,
   ClipboardList,
   Clock,
-  Coins,
   FileSignature,
+  Lock,
   Receipt,
   TrendingUp,
   UserPlus,
   Users,
 } from "lucide-react";
 
-import { CreditMeter } from "@/components/cards/credit-meter";
 import { QuickActionCard } from "@/components/cards/quick-action-card";
 import { StatCard } from "@/components/cards/stat-card";
 import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
@@ -32,34 +32,50 @@ import {
 } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/format";
-import { canUseAdvancing, canUseContracts, planById } from "@/lib/plan";
 import {
-  getBookings,
-  getClients,
-  getContracts,
-  getCreditTransactions,
-  getInvoices,
-} from "@/lib/queries";
+  canUseAdvancing,
+  canUseBookings,
+  canUseContracts,
+  planById,
+} from "@/lib/plan";
+import { cn } from "@/lib/utils";
+import { getBookings, getClients, getContracts, getInvoices } from "@/lib/queries";
 import type { Invoice } from "@/types";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
+const planFeatures = [
+  { label: "Invoices & clients", key: "always" as const, lockedLabel: "" },
+  { label: "Bookings", key: "bookings" as const, lockedLabel: "Standard plan" },
+  { label: "Agreements", key: "contracts" as const, lockedLabel: "Pro plan" },
+  {
+    label: "Advancing forms",
+    key: "advancing" as const,
+    lockedLabel: "Pro plan",
+  },
+];
+
 export default async function DashboardOverviewPage() {
   const user = await requireUser();
   const plan = planById(user.planId);
+  const bookingsUnlocked = canUseBookings(plan);
   const contractsUnlocked = canUseContracts(plan);
   const advancingUnlocked = canUseAdvancing(plan);
+  const unlockedByKey = {
+    always: true,
+    bookings: bookingsUnlocked,
+    contracts: contractsUnlocked,
+    advancing: advancingUnlocked,
+  };
 
-  const [invoices, bookings, contracts, clients, creditTransactions] =
-    await Promise.all([
-      getInvoices(user.id),
-      getBookings(user.id),
-      getContracts(user.id),
-      getClients(user.id),
-      getCreditTransactions(user.id),
-    ]);
+  const [invoices, bookings, contracts, clients] = await Promise.all([
+    getInvoices(user.id),
+    getBookings(user.id),
+    getContracts(user.id),
+    getClients(user.id),
+  ]);
 
   const paidInvoices = invoices.filter((i) => i.status === "paid");
   const pendingInvoices = invoices.filter((i) =>
@@ -75,9 +91,6 @@ export default async function DashboardOverviewPage() {
   const recentInvoices = [...invoices]
     .sort((a, b) => b.issueDate.localeCompare(a.issueDate))
     .slice(0, 5);
-  const recentCredits = [...creditTransactions]
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-    .slice(0, 4);
 
   return (
     <>
@@ -125,12 +138,6 @@ export default async function DashboardOverviewPage() {
           icon={Users}
         />
         <StatCard
-          label="Credit balance"
-          value={String(user.creditBalance)}
-          hint={`of ${plan.includedCredits} monthly credits`}
-          icon={Coins}
-        />
-        <StatCard
           label="Monthly earnings"
           value={formatCurrency(monthlyEarnings, user.currency)}
           hint="Collected this month"
@@ -160,20 +167,6 @@ export default async function DashboardOverviewPage() {
             href="/dashboard/invoices"
           />
           <QuickActionCard
-            icon={FileSignature}
-            label="Create Contract"
-            href="/dashboard/contracts/new"
-            locked={!contractsUnlocked}
-            lockNote="Contracts are available on Starter Plan and above."
-          />
-          <QuickActionCard
-            icon={ClipboardList}
-            label="Create Advance Form"
-            href="/dashboard/advancing"
-            locked={!advancingUnlocked}
-            lockNote="Advancing is available on Pro Plan and above."
-          />
-          <QuickActionCard
             icon={UserPlus}
             label="Add Client"
             href="/dashboard/clients"
@@ -181,7 +174,23 @@ export default async function DashboardOverviewPage() {
           <QuickActionCard
             icon={CalendarPlus}
             label="Add Booking"
-            href="/dashboard/bookings"
+            href="/dashboard/bookings/new"
+            locked={!bookingsUnlocked}
+            lockNote="Bookings are available on Standard and Pro."
+          />
+          <QuickActionCard
+            icon={FileSignature}
+            label="Create Agreement"
+            href="/dashboard/contracts/new"
+            locked={!contractsUnlocked}
+            lockNote="Agreements are available on Pro plan."
+          />
+          <QuickActionCard
+            icon={ClipboardList}
+            label="Create Advance Form"
+            href="/dashboard/advancing"
+            locked={!advancingUnlocked}
+            lockNote="Advancing is available on Pro plan."
           />
         </div>
       </section>
@@ -261,11 +270,11 @@ export default async function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* Pending contracts + credit usage */}
+      {/* Pending agreements + plan features */}
       <div className="grid items-start gap-5 xl:grid-cols-2">
         <Card className="shadow-xs">
           <CardHeader>
-            <CardTitle>Pending contracts</CardTitle>
+            <CardTitle>Pending agreements</CardTitle>
             <CardDescription>
               Agreements waiting on a signature or still in draft.
             </CardDescription>
@@ -293,48 +302,52 @@ export default async function DashboardOverviewPage() {
 
         <Card className="shadow-xs">
           <CardHeader>
-            <CardTitle>Credit usage</CardTitle>
+            <CardTitle>Your plan</CardTitle>
             <CardDescription>
-              Documents you generate use credits from your monthly allowance.
+              {plan.name} plan · {plan.tagline}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <CreditMeter
-              balance={user.creditBalance}
-              included={plan.includedCredits}
-              planName={plan.name}
-            />
-            <div className="space-y-2">
-              {recentCredits.map((tx) => (
+          <CardContent className="space-y-2">
+            {planFeatures.map((feature) => {
+              const unlocked = unlockedByKey[feature.key];
+              return (
                 <div
-                  key={tx.id}
-                  className="flex items-center justify-between gap-3 text-sm"
+                  key={feature.label}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-border/60 px-3 py-2 text-sm"
                 >
-                  <span className="truncate text-muted-foreground">
-                    {tx.description}
-                  </span>
                   <span
-                    className={
-                      tx.amount > 0
-                        ? "font-medium text-emerald-600 dark:text-emerald-400"
-                        : "font-medium"
-                    }
+                    className={cn(
+                      "flex items-center gap-2",
+                      !unlocked && "text-muted-foreground"
+                    )}
                   >
-                    {tx.amount > 0 ? `+${tx.amount}` : tx.amount}
+                    {unlocked ? (
+                      <Check className="size-3.5 text-primary" />
+                    ) : (
+                      <Lock className="size-3.5" />
+                    )}
+                    {feature.label}
                   </span>
+                  {!unlocked ? (
+                    <span className="text-xs text-muted-foreground">
+                      {feature.lockedLabel}
+                    </span>
+                  ) : null}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </CardContent>
         </Card>
       </div>
 
       {/* Upgrade prompt */}
-      <UpgradePrompt
-        title={`You're on the ${plan.name} plan`}
-        description="Upgrade for contracts, advancing forms, custom branding, and watermark-free PDFs."
-        cta="View plans"
-      />
+      {plan.id !== "plan-pro" ? (
+        <UpgradePrompt
+          title={`You're on the ${plan.name} plan`}
+          description="Upgrade to Pro for bookings, agreements, advancing forms, and custom branding."
+          cta="View plans"
+        />
+      ) : null}
     </>
   );
 }

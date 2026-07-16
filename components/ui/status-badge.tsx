@@ -39,7 +39,7 @@ const tones: Record<string, Tone> = {
 /** Statuses whose stored key isn't the same as the human label. */
 const labels: Record<string, string> = {
   "pending-client": "Pending client",
-  "contract-sent": "Contract sent",
+  "contract-sent": "Agreement sent",
   "deposit-paid": "Deposit paid",
   "advance-completed": "Advance completed",
   "job-completed": "Job completed",

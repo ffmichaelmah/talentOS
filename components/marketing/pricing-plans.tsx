@@ -57,7 +57,7 @@ export function PricingPlans() {
         </div>
       </div>
 
-      <div className="grid items-stretch gap-6 lg:grid-cols-4">
+      <div className="grid items-stretch gap-6 lg:grid-cols-3">
         {subscriptionPlans.map((plan) => {
           const price = priceLabel(plan, period);
           return (

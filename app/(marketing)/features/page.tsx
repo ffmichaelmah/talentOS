@@ -5,9 +5,9 @@ import {
   BadgeCheck,
   Calendar,
   ClipboardList,
-  Coins,
   Download,
   FileSignature,
+  Layers,
   Palette,
   Receipt,
   Users,
@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Features",
   description:
-    "Invoices, contracts, booking advances, client management, payment tracking, and more — every tool a modern talent needs to run their business.",
+    "Invoices, agreements, booking advances, client management, payment tracking, and more — every tool a modern talent needs to run their business.",
 };
 
 const spotlights = [
@@ -66,14 +66,14 @@ const spotlights = [
   },
   {
     icon: FileSignature,
-    eyebrow: "Contracts",
-    title: "Contracts built for talent, ready to send.",
+    eyebrow: "Agreements",
+    title: "Agreements built for talent, ready to send.",
     description:
       "Generate performance and collaboration agreements from reference templates, amend any detail, and edit the content to fit your deal.",
     points: [
       "Reference templates for every kind of gig",
       "Editable client, fee, and terms",
-      "Legal review available on higher tiers",
+      "Clean, signable PDF export",
     ],
     preview: (
       <div className="space-y-2.5 font-mono text-[11px] leading-relaxed">
@@ -137,7 +137,7 @@ const spotlights = [
 const capabilities = [
   { icon: Users, title: "Client Management", description: "Every venue, brand, and promoter with full booking history." },
   { icon: Wallet, title: "Payment Tracking", description: "Paid, pending, and overdue — always at a glance." },
-  { icon: Coins, title: "Credit-Based Tools", description: "Pay per document, or subscribe and stop counting." },
+  { icon: Layers, title: "Simple Plans", description: "Free, Standard, or Pro — upgrade whenever you're ready." },
   { icon: Download, title: "PDF Export", description: "Polished, branded documents ready to send and sign." },
   { icon: Palette, title: "Custom Branding", description: "Your logo and colors on everything you send." },
   { icon: Calendar, title: "Booking Pipeline", description: "Track every gig from inquiry to completed." },

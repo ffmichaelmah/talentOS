@@ -47,9 +47,9 @@ function buildTimeline(
   const events: { date: string; label: string }[] = [];
   events.push({ date: booking.createdAt, label: "Booking created" });
   if (contract?.sentAt)
-    events.push({ date: contract.sentAt, label: "Contract sent to client" });
+    events.push({ date: contract.sentAt, label: "Agreement sent to client" });
   if (contract?.signedAt)
-    events.push({ date: contract.signedAt, label: "Contract signed" });
+    events.push({ date: contract.signedAt, label: "Agreement signed" });
   if (invoice)
     events.push({
       date: `${invoice.issueDate}T09:00:00Z`,
@@ -203,7 +203,7 @@ export default async function BookingDetailPage(
               />
               <LinkedDoc
                 icon={FileSignature}
-                label="Contract"
+                label="Agreement"
                 status={contract?.status}
                 href={
                   contract ? `/dashboard/contracts/${contract.id}` : undefined

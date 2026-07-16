@@ -48,7 +48,7 @@ export default async function BillingPage() {
           </CardTitle>
           <CardDescription>{currentPlan.tagline}</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-4">
+        <CardContent className="grid gap-5 sm:grid-cols-3">
           <div>
             <p className="text-xs text-muted-foreground">Plan</p>
             <p className="mt-0.5 text-lg font-semibold tracking-tight">
@@ -64,15 +64,11 @@ export default async function BillingPage() {
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Credits included</p>
-            <p className="mt-0.5 text-lg font-semibold tracking-tight">
-              {currentPlan.includedCredits}/mo
-            </p>
-          </div>
-          <div>
             <p className="text-xs text-muted-foreground">Renews</p>
             <p className="mt-0.5 text-lg font-semibold tracking-tight">
-              {formatDate(renewal.toISOString())}
+              {currentPlan.monthlyPrice === 0
+                ? "—"
+                : formatDate(renewal.toISOString())}
             </p>
           </div>
         </CardContent>
@@ -83,7 +79,7 @@ export default async function BillingPage() {
         <h2 className="text-sm font-medium text-muted-foreground">
           Compare plans
         </h2>
-        <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid items-stretch gap-4 sm:grid-cols-3">
           {subscriptionPlans.map((plan) => {
             const isCurrent = plan.id === currentPlan.id;
             return (

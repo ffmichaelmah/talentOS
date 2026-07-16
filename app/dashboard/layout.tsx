@@ -16,18 +16,12 @@ export default async function DashboardLayout({
     displayName: user.displayName,
     email: user.email,
     avatarUrl: user.avatarUrl,
-    creditBalance: user.creditBalance,
     planName: plan.name,
-    includedCredits: plan.includedCredits,
   };
 
   return (
     <div className="flex min-h-dvh">
-      <Sidebar
-        creditBalance={chrome.creditBalance}
-        planName={chrome.planName}
-        includedCredits={chrome.includedCredits}
-      />
+      <Sidebar planName={chrome.planName} isTopPlan={plan.id === "plan-pro"} />
       <div className="flex min-w-0 flex-1 flex-col">
         <DemoBanner />
         <Topbar user={chrome} />

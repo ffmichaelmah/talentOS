@@ -12,7 +12,6 @@ import {
   bookings,
   clients,
   contracts,
-  creditTransactions,
   currentUser,
   invoices,
 } from "../data";
@@ -73,24 +72,12 @@ async function main() {
       },
     });
   }
-  for (const t of creditTransactions) {
-    await prisma.creditTransaction.create({
-      data: {
-        ...t,
-        relatedDocument: t.relatedDocument
-          ? JSON.stringify(t.relatedDocument)
-          : null,
-      },
-    });
-  }
-
   const counts = {
     clients: clients.length,
     bookings: bookings.length,
     invoices: invoices.length,
     contracts: contracts.length,
     advanceForms: advanceForms.length,
-    creditTransactions: creditTransactions.length,
   };
   console.log("Seeded demo user", currentUser.email, counts);
 }

@@ -36,8 +36,6 @@ export interface User {
   location: string;
   /** ISO 4217 code used as the default for documents, e.g. "USD". */
   currency: string;
-  /** Current credit balance for pay-per-document usage. */
-  creditBalance: number;
   /** References SubscriptionPlan.id */
   planId: string;
   createdAt: string;
@@ -366,29 +364,6 @@ export interface AdvanceForm {
   clientName?: string;
 }
 
-/* --------------------------- Credit Transaction -------------------------- */
-
-export type CreditTransactionType = "purchase" | "spend" | "bonus" | "refund";
-
-export interface CreditTransaction {
-  id: string;
-  userId: string;
-  type: CreditTransactionType;
-  /** Positive for credits in (purchase/bonus/refund), negative for spend. */
-  amount: number;
-  balanceAfter: number;
-  description: string;
-  /** What the credits were spent on, when applicable. */
-  relatedDocument?: {
-    kind: "invoice" | "contract" | "advance-form";
-    id: string;
-  };
-  createdAt: string;
-  /** Enrichment resolved by the query layer for display. */
-  relatedLabel?: string;
-  relatedHref?: string;
-}
-
 /* ----------------------------- Document Template ------------------------- */
 
 export type TemplateKind = "invoice" | "contract" | "advance-form";
@@ -452,6 +427,8 @@ export interface PlanLimits {
   /** null = unlimited */
   clients: number | null;
   invoicesPerMonth: number | null;
+  /** 0 = feature locked for this plan, null = unlimited. */
+  bookingsPerMonth: number | null;
   contractsPerMonth: number | null;
   advanceFormsPerMonth: number | null;
   teamSeats: number;
@@ -464,8 +441,6 @@ export interface SubscriptionPlan {
   monthlyPrice: number;
   yearlyPrice: number;
   currency: string;
-  /** Credits included each month for document generation. */
-  includedCredits: number;
   features: string[];
   limits: PlanLimits;
   /** Access to contract legal review / advice features. */

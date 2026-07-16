@@ -27,16 +27,14 @@ model User {
   paymentDetails String?
   location       String   @default("")
   currency       String   @default("USD")
-  creditBalance  Int      @default(5)
   planId         String   @default("plan-free")
   createdAt      String
 
-  clients            Client[]
-  bookings           Booking[]
-  invoices           Invoice[]
-  contracts          Contract[]
-  advanceForms       AdvanceForm[]
-  creditTransactions CreditTransaction[]
+  clients      Client[]
+  bookings     Booking[]
+  invoices     Invoice[]
+  contracts    Contract[]
+  advanceForms AdvanceForm[]
 }
 
 model Client {
@@ -166,21 +164,6 @@ model AdvanceForm {
   campaignDetails String? // JSON: CampaignAdvanceDetails
   createdAt       String
   updatedAt       String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model CreditTransaction {
-  id              String  @id @default(cuid())
-  userId          String
-  type            String
-  amount          Int
-  balanceAfter    Int
-  description     String
-  relatedDocument String? // JSON: { kind, id }
-  createdAt       String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

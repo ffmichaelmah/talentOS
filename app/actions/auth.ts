@@ -47,7 +47,6 @@ export async function signupAction(
       displayName: parsed.data.name,
       location: "",
       currency: "USD",
-      creditBalance: 5,
       planId: "plan-free",
       createdAt: new Date().toISOString(),
     },

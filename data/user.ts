@@ -2,10 +2,10 @@ import type { User } from "@/types";
 
 export const currentUser: User = {
   id: "user-1",
-  name: "Maya Reyes",
-  displayName: "DJ NOVA",
+  name: "Mike Zooka",
+  displayName: "Mike Zooka",
   email: "maya@djnova.live",
-  avatarUrl: "https://i.pravatar.cc/150?img=47",
+  avatarUrl: "/avatars/mike-zooka.jpg",
   talentType: "dj",
   businessName: "Nova Sounds LLC",
   phone: "+1 (213) 555-0101",
@@ -14,7 +14,6 @@ export const currentUser: User = {
     "Bank transfer — Pacific West Bank · Acct 0042-7781-3309 · Routing 122000247 · PayPal: pay@djnova.live",
   location: "Los Angeles, CA",
   currency: "USD",
-  creditBalance: 184,
   planId: "plan-pro",
   createdAt: "2025-09-12T18:24:00Z",
 };

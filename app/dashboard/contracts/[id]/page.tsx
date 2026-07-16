@@ -14,7 +14,7 @@ import { clientDisplayName, contractTypeLabel } from "@/lib/contracts";
 import { getClientById, getContractById } from "@/lib/queries";
 
 export const metadata: Metadata = {
-  title: "Contract",
+  title: "Agreement",
 };
 
 export default async function ContractDetailPage(
@@ -41,7 +41,7 @@ export default async function ContractDetailPage(
             size="icon"
             nativeButton={false}
             render={<Link href="/dashboard/contracts" />}
-            aria-label="Back to contracts"
+            aria-label="Back to agreements"
           >
             <ArrowLeft className="size-4" />
           </Button>

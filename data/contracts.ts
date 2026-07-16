@@ -3,7 +3,7 @@ import type { Contract } from "@/types";
 export const contracts: Contract[] = [
   {
     id: "contract-1",
-    title: "DJ Booking Contract — Echoplex Saturday Residency",
+    title: "DJ Booking Agreement — Echoplex Saturday Residency",
     clientId: "client-1",
     bookingId: "booking-1",
     status: "signed",
@@ -153,7 +153,7 @@ export const contracts: Contract[] = [
   },
   {
     id: "contract-5",
-    title: "DJ Booking Contract — Kim 40th Birthday",
+    title: "DJ Booking Agreement — Kim 40th Birthday",
     clientId: "client-5",
     bookingId: "booking-5",
     status: "signed",

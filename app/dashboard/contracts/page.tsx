@@ -11,7 +11,7 @@ import { canUseContracts, planById } from "@/lib/plan";
 import { getContracts } from "@/lib/queries";
 
 export const metadata: Metadata = {
-  title: "Contracts",
+  title: "Agreements",
 };
 
 export default async function ContractsPage() {
@@ -22,7 +22,7 @@ export default async function ContractsPage() {
   return (
     <>
       <PageHeader
-        title="Contracts"
+        title="Agreements"
         description={`${contracts.length} agreements. Templates are for reference only — not legal advice.`}
         actions={
           <Button
@@ -30,7 +30,7 @@ export default async function ContractsPage() {
             render={<Link href="/dashboard/contracts/new" />}
           >
             <Plus className="size-4" />
-            New contract
+            New agreement
           </Button>
         }
       />
@@ -38,7 +38,7 @@ export default async function ContractsPage() {
       {!unlocked ? (
         <UpgradePrompt
           variant="banner"
-          description="Contracts are available on Starter Plan and above."
+          description="Agreements are available on Pro plan."
           cta="Upgrade"
         />
       ) : null}

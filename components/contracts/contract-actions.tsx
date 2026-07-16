@@ -18,11 +18,11 @@ type Action = "draft" | "preview" | "export" | "send";
 const confirmations: Record<Exclude<Action, "preview">, string> = {
   draft: "Draft saved — prototype only, nothing is persisted yet.",
   export: "PDF export is coming soon — this layout is already print-ready.",
-  send: "Contract marked as sent — e-signature delivery arrives with the backend.",
+  send: "Agreement marked as sent — e-signature delivery arrives with the backend.",
 };
 
 /**
- * Prototype contract action buttons. "Preview Contract" opens the full
+ * Prototype contract action buttons. "Preview Agreement" opens the full
  * document in a dialog; the rest show a transient confirmation.
  */
 export function ContractActions({
@@ -32,7 +32,7 @@ export function ContractActions({
   className,
 }: {
   actions?: Action[];
-  /** Full-document preview rendered inside the Preview Contract dialog. */
+  /** Full-document preview rendered inside the Preview Agreement dialog. */
   preview?: React.ReactNode;
   disabled?: boolean;
   className?: string;
@@ -59,11 +59,11 @@ export function ContractActions({
           <Dialog>
             <DialogTrigger render={<Button variant="outline" />}>
               <Eye className="size-4" />
-              Preview Contract
+              Preview Agreement
             </DialogTrigger>
             <DialogContent className="max-h-[88vh] max-w-3xl overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Contract preview</DialogTitle>
+                <DialogTitle>Agreement preview</DialogTitle>
               </DialogHeader>
               {preview}
             </DialogContent>

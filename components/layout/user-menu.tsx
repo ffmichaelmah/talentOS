@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CreditCard, LogOut, Settings, UserRound } from "lucide-react";
+import { CreditCard, LogOut, UserRound } from "lucide-react";
 
 import { logoutAction } from "@/app/actions/auth";
 import type { ChromeUser } from "@/components/layout/topbar";
@@ -62,10 +62,6 @@ export function UserMenu({ user }: { user: ChromeUser }) {
         <DropdownMenuItem render={<Link href="/dashboard/billing" />}>
           <CreditCard className="size-4" />
           Billing & plan
-        </DropdownMenuItem>
-        <DropdownMenuItem render={<Link href="/dashboard/credits" />}>
-          <Settings className="size-4" />
-          Credits
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => logoutAction()}>

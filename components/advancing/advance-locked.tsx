@@ -53,7 +53,7 @@ export function AdvanceLocked() {
         </span>
         <div className="space-y-1.5">
           <h2 className="text-xl font-semibold tracking-tight">
-            Client advancing forms are available on Pro Plan and above.
+            Client advancing forms are available on Pro plan.
           </h2>
           <p className="mx-auto max-w-md text-sm text-muted-foreground">
             Collect every detail from your client before the event — timings,

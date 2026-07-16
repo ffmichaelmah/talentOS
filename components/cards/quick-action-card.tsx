@@ -14,7 +14,7 @@ export function QuickActionCard({
   label: string;
   href: string;
   locked?: boolean;
-  /** e.g. "Contracts are available on Starter Plan and above." */
+  /** e.g. "Agreements are available on Pro plan." */
   lockNote?: string;
 }) {
   return (

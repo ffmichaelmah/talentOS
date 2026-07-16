@@ -4,7 +4,7 @@ export const BOOKING_STAGE_LABELS: Record<BookingStage, string> = {
   inquiry: "Inquiry",
   quoted: "Quoted",
   confirmed: "Confirmed",
-  "contract-sent": "Contract Sent",
+  "contract-sent": "Agreement Sent",
   "deposit-paid": "Deposit Paid",
   "advance-completed": "Advance Completed",
   "job-completed": "Job Completed",

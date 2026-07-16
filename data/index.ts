@@ -4,6 +4,5 @@ export { bookings } from "./bookings";
 export { invoices } from "./invoices";
 export { contracts } from "./contracts";
 export { advanceForms } from "./advance-forms";
-export { creditTransactions } from "./credit-transactions";
 export { subscriptionPlans } from "./subscription-plans";
 export { templates } from "./templates";

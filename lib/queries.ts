@@ -1,14 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/db";
-import type {
-  AdvanceForm,
-  Booking,
-  Client,
-  Contract,
-  CreditTransaction,
-  Invoice,
-} from "@/types";
+import type { AdvanceForm, Booking, Client, Contract, Invoice } from "@/types";
 
 /* ------------------------------- helpers --------------------------------- */
 
@@ -119,6 +112,10 @@ export async function getInvoicesForClient(
     orderBy: { issueDate: "desc" },
   });
   return rows.map((r) => parseInvoice(r, {}, {}));
+}
+
+export async function clientCount(userId: string): Promise<number> {
+  return prisma.client.count({ where: { userId } });
 }
 
 export async function invoiceCountThisMonth(userId: string): Promise<number> {
@@ -272,55 +269,3 @@ export async function getAdvanceFormById(
   return parseAdvance(row, names);
 }
 
-/* ------------------------------- credits --------------------------------- */
-
-export async function getCreditTransactions(
-  userId: string
-): Promise<CreditTransaction[]> {
-  const [rows, invoices, contracts, advances] = await Promise.all([
-    prisma.creditTransaction.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.invoice.findMany({ where: { userId }, select: { id: true, invoiceNumber: true } }),
-    prisma.contract.findMany({ where: { userId }, select: { id: true, title: true } }),
-    prisma.advanceForm.findMany({
-      where: { userId },
-      select: { id: true, reference: true, title: true },
-    }),
-  ]);
-  const invMap = Object.fromEntries(invoices.map((i) => [i.id, i.invoiceNumber]));
-  const conMap = Object.fromEntries(contracts.map((c) => [c.id, c.title]));
-  const advMap = Object.fromEntries(
-    advances.map((a) => [a.id, a.reference ?? a.title])
-  );
-
-  return rows.map((r) => {
-    const ref = r.relatedDocument
-      ? (JSON.parse(r.relatedDocument) as {
-          kind: "invoice" | "contract" | "advance-form";
-          id: string;
-        })
-      : undefined;
-    let relatedLabel: string | undefined;
-    let relatedHref: string | undefined;
-    if (ref) {
-      if (ref.kind === "invoice") {
-        relatedLabel = invMap[ref.id] ?? "Invoice";
-        relatedHref = `/dashboard/invoices/${ref.id}`;
-      } else if (ref.kind === "contract") {
-        relatedLabel = conMap[ref.id] ?? "Contract";
-        relatedHref = `/dashboard/contracts/${ref.id}`;
-      } else {
-        relatedLabel = advMap[ref.id] ?? "Advance form";
-        relatedHref = `/dashboard/advancing/${ref.id}`;
-      }
-    }
-    return {
-      ...r,
-      relatedDocument: ref,
-      relatedLabel,
-      relatedHref,
-    } as unknown as CreditTransaction;
-  });
-}

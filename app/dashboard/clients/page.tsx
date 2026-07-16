@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
+import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
 import { ClientsTable } from "@/components/clients/clients-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
+import { isOverClientLimit, planById } from "@/lib/plan";
 import { getClients, lastBookingByClient } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -18,6 +20,7 @@ export default async function ClientsPage() {
     getClients(user.id),
     lastBookingByClient(user.id),
   ]);
+  const limitReached = isOverClientLimit(planById(user.planId), clients.length);
 
   return (
     <>
@@ -34,6 +37,15 @@ export default async function ClientsPage() {
           </Button>
         }
       />
+
+      {limitReached ? (
+        <UpgradePrompt
+          variant="banner"
+          description="You've reached your free client limit. Upgrade to add more clients."
+          cta="Upgrade"
+        />
+      ) : null}
+
       <ClientsTable clients={clients} lastBooking={lastBooking} />
     </>
   );

@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { CONTRACT_REFERENCE_DISCLAIMER_LONG } from "@/lib/contracts";
 
 const sample: ContractView = {
-  title: "DJ Booking Contract — Sample Festival Set",
-  typeLabel: "DJ Booking Contract",
+  title: "DJ Booking Agreement — Sample Festival Set",
+  typeLabel: "DJ Booking Agreement",
   status: "draft",
   talentLegalName: "Your name (Your business)",
   clientLegalName: "Sample Promoter",
@@ -49,7 +49,7 @@ export function ContractLocked() {
         </span>
         <div className="space-y-1.5">
           <h2 className="text-xl font-semibold tracking-tight">
-            Contracts are available on Starter Plan and above.
+            Agreements are available on Pro plan.
           </h2>
           <p className="mx-auto max-w-md text-sm text-muted-foreground">
             Generate DJ bookings, brand collaborations, appearance agreements,

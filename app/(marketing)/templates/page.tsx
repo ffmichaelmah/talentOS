@@ -17,7 +17,7 @@ import type { TemplateKind } from "@/types";
 export const metadata: Metadata = {
   title: "Templates",
   description:
-    "Professional invoice, contract, and booking advance templates built for DJs, creators, musicians, and freelance talents. Customize and send in minutes.",
+    "Professional invoice, agreement, and booking advance templates built for DJs, creators, musicians, and freelance talents. Customize and send in minutes.",
 };
 
 const categories: {
@@ -28,7 +28,7 @@ const categories: {
 }[] = [
   {
     kind: "contract",
-    label: "Contracts",
+    label: "Agreements",
     icon: FileSignature,
     description:
       "Performance, brand collaboration, and engagement agreements — amend the details and send for signature.",

@@ -6,7 +6,7 @@ export const templates: DocumentTemplate[] = [
     kind: "contract",
     name: "Performance Agreement",
     description:
-      "Standard single-event performance contract with deposit, cancellation, and overtime terms.",
+      "Standard single-event performance agreement with deposit, cancellation, and overtime terms.",
     status: "published",
     version: 4,
     isDefault: true,
@@ -18,7 +18,7 @@ This agreement is made between {{talent.businessName}} ("Artist") and {{client.c
 1. PERFORMANCE. Artist will perform a set of {{fields.setLength}} minutes beginning at the time stated above.
 2. FEE. Purchaser agrees to pay {{document.total}}, with a deposit of {{fields.depositPercent}}% due upon signing. Balance is due {{fields.balanceDue}}.
 3. CANCELLATION. Cancellations within {{fields.cancellationWindow}} days of the event forfeit the deposit.
-4. OVERTIME. Performance beyond the contracted time is billed at {{fields.overtimeRate}} per hour.
+4. OVERTIME. Performance beyond the agreed time is billed at {{fields.overtimeRate}} per hour.
 
 Signed,
 {{talent.displayName}} — {{client.name}}`,
@@ -72,7 +72,7 @@ Signed,
     kind: "contract",
     name: "Brand Collaboration Agreement",
     description:
-      "Sponsored performance / appearance contract including content usage rights and exclusivity.",
+      "Sponsored performance / appearance agreement including content usage rights and exclusivity.",
     status: "published",
     version: 2,
     isDefault: false,
@@ -385,7 +385,7 @@ For the Artist: {{talent.displayName}}, {{talent.businessName}}`,
     status: "published",
     version: 1,
     isDefault: false,
-    minPlanId: "plan-starter",
+    minPlanId: "plan-pro",
     body: `PERFORMANCE AGREEMENT {{document.number}}
 Dated {{document.issueDate}}
 
@@ -481,14 +481,14 @@ For the Artist: {{talent.displayName}}, {{talent.businessName}}`,
   {
     id: "template-9",
     kind: "contract",
-    name: "Engagement Contract (Agency Schedule)",
+    name: "Engagement Agreement (Agency Schedule)",
     description:
-      "Agency-style engagement contract with a schedule (artist/agency/bank fees, payment schedule, billing, hotel, transport) and core terms: cancellation windows, recording prohibition, permits, and governing law.",
+      "Agency-style engagement agreement with a schedule (artist/agency/bank fees, payment schedule, billing, hotel, transport) and core terms: cancellation windows, recording prohibition, permits, and governing law.",
     status: "published",
     version: 1,
     isDefault: false,
-    minPlanId: "plan-starter",
-    body: `ENGAGEMENT CONTRACT {{document.number}}
+    minPlanId: "plan-pro",
+    body: `ENGAGEMENT AGREEMENT {{document.number}}
 An agreement dated {{document.issueDate}}
 
 BETWEEN {{client.name}} of {{client.company}} ("the Company") of the one part, AND the artist professionally known as {{talent.displayName}}, booked through {{talent.businessName}} ("the Artist"), of the other part.
@@ -510,12 +510,12 @@ SCHEDULE
 
 CONDITIONS
 1. CANCELLATION. Cancellation by the Company is acceptable only under Force Majeure, in which case the deposit and booking fee are non-refundable. If the Company cancels within {{fields.cancellationWindow}} weeks of the date for any other reason, the full fees become due; earlier cancellation forfeits the deposit and booking fee only.
-2. TERMINATION. The Artist may terminate immediately on written notice if the Company breaches this contract, fails to pay on time, or enters insolvency. All outstanding fees become payable within 5 days of such notice.
+2. TERMINATION. The Artist may terminate immediately on written notice if the Company breaches this agreement, fails to pay on time, or enters insolvency. All outstanding fees become payable within 5 days of such notice.
 3. RECORDING. No audio or audio-visual recording or broadcast of the Performance may be made or permitted by the Company without the Artist's prior written approval.
 4. PERMITS & INSURANCE. The Company shall, at its own cost, obtain all required licences, permits, visas, safety certificates, and insurance, and shall provide adequate security for the Artist from arrival until departure.
-5. LIABILITY. Each party's liability for breach is capped at the total fees actually paid under this contract.
-6. CONFIDENTIALITY. The terms of this contract are confidential to the parties.
-7. GOVERNING LAW. This contract is governed by the laws of {{fields.governingLaw}}, and disputes are subject to the exclusive jurisdiction of its courts.
+5. LIABILITY. Each party's liability for breach is capped at the total fees actually paid under this agreement.
+6. CONFIDENTIALITY. The terms of this agreement are confidential to the parties.
+7. GOVERNING LAW. This agreement is governed by the laws of {{fields.governingLaw}}, and disputes are subject to the exclusive jurisdiction of its courts.
 
 SIGNED for the Company: {{client.name}}, {{client.company}}
 SIGNED for the Artist: {{talent.displayName}}, {{talent.businessName}}`,

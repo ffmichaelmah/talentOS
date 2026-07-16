@@ -94,7 +94,7 @@ export function ContractsTable({ contracts }: { contracts: Contract[] }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search title, client, or type…"
             className="pl-8"
-            aria-label="Search contracts"
+            aria-label="Search agreements"
           />
         </div>
       </div>
@@ -102,11 +102,11 @@ export function ContractsTable({ contracts }: { contracts: Contract[] }) {
       {rows.length === 0 ? (
         <EmptyStateCard
           icon={FileSignature}
-          title="No contracts match"
+          title="No agreements match"
           description={
             query
               ? `Nothing found for “${query}”. Try a different title, client, or type.`
-              : "No contracts with this status yet."
+              : "No agreements with this status yet."
           }
         />
       ) : (
@@ -115,7 +115,7 @@ export function ContractsTable({ contracts }: { contracts: Contract[] }) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Contract</TableHead>
+                  <TableHead>Agreement</TableHead>
                   <TableHead>Client</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead className="text-right">Fee</TableHead>

@@ -38,7 +38,7 @@ export default async function AdvancingPage() {
       {!unlocked ? (
         <UpgradePrompt
           variant="banner"
-          description="Client advancing forms are available on Pro Plan and above."
+          description="Client advancing forms are available on Pro plan."
           cta="Upgrade"
         />
       ) : null}

@@ -2,7 +2,6 @@ import {
   ArrowLeft,
   Calendar,
   ClipboardList,
-  Coins,
   CreditCard,
   FileSignature,
   LayoutDashboard,
@@ -22,11 +21,10 @@ export interface NavItem {
 export const dashboardNav: NavItem[] = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { label: "Invoices", href: "/dashboard/invoices", icon: Receipt },
-  { label: "Contracts", href: "/dashboard/contracts", icon: FileSignature },
-  { label: "Advancing", href: "/dashboard/advancing", icon: ClipboardList },
   { label: "Clients", href: "/dashboard/clients", icon: Users },
   { label: "Bookings", href: "/dashboard/bookings", icon: Calendar },
-  { label: "Credits", href: "/dashboard/credits", icon: Coins },
+  { label: "Agreements", href: "/dashboard/contracts", icon: FileSignature },
+  { label: "Advancing", href: "/dashboard/advancing", icon: ClipboardList },
   { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
