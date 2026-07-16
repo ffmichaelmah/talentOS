@@ -4,7 +4,7 @@ import { AdvanceForm } from "@/components/advancing/advance-form";
 import { AdvanceLocked } from "@/components/advancing/advance-locked";
 import { PageHeader } from "@/components/layout/page-header";
 import { requireUser } from "@/lib/auth";
-import { canUseAdvancing, planById } from "@/lib/plan";
+import { canUseAdvancing, planForUser } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "New advance form",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function NewAdvancePage() {
   const user = await requireUser();
-  const unlocked = canUseAdvancing(planById(user.planId));
+  const unlocked = canUseAdvancing(planForUser(user));
 
   return (
     <>

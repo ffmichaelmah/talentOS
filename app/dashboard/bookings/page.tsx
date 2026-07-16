@@ -7,7 +7,7 @@ import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
-import { canUseBookings, planById } from "@/lib/plan";
+import { canUseBookings, planForUser } from "@/lib/plan";
 import { getBookings } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function BookingsPage() {
   const user = await requireUser();
   const bookings = await getBookings(user.id);
-  const unlocked = canUseBookings(planById(user.planId));
+  const unlocked = canUseBookings(planForUser(user));
 
   return (
     <>

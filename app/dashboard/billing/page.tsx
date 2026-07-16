@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { BadgeCheck, Check, CreditCard, Receipt } from "lucide-react";
 
+import {
+  CancelSubscriptionButton,
+  ResumeSubscriptionButton,
+} from "@/components/billing/subscription-actions";
 import { EmptyStateCard } from "@/components/cards/empty-state-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -9,13 +13,19 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { subscriptionPlans } from "@/data";
 import { requireUser } from "@/lib/auth";
 import { formatDate } from "@/lib/format";
-import { planById } from "@/lib/plan";
+import {
+  isCancelledButActive,
+  isPaidPlan,
+  nextBillingDate,
+  planForUser,
+} from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -28,9 +38,15 @@ function priceLabel(monthly: number): string {
 
 export default async function BillingPage() {
   const user = await requireUser();
-  const currentPlan = planById(user.planId);
-  const now = new Date();
-  const renewal = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const currentPlan = planForUser(user);
+  const paid = isPaidPlan(currentPlan);
+  const cancelling = isCancelledButActive(user);
+  // While winding down, the stored end date is authoritative; otherwise the
+  // next renewal is simply the start of next month.
+  const periodEnd = user.currentPeriodEnd
+    ? new Date(user.currentPeriodEnd)
+    : nextBillingDate();
+  const periodEndLabel = formatDate(periodEnd.toISOString());
 
   return (
     <>
@@ -51,27 +67,53 @@ export default async function BillingPage() {
         <CardContent className="grid gap-5 sm:grid-cols-3">
           <div>
             <p className="text-xs text-muted-foreground">Plan</p>
-            <p className="mt-0.5 text-lg font-semibold tracking-tight">
+            <p className="mt-0.5 flex items-center gap-2 text-lg font-semibold tracking-tight">
               {currentPlan.name}
+              {cancelling ? <Badge variant="outline">Cancelling</Badge> : null}
             </p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Monthly price</p>
             <p className="mt-0.5 text-lg font-semibold tracking-tight">
-              {currentPlan.monthlyPrice === 0
-                ? "$0"
-                : `$${currentPlan.monthlyPrice}`}
+              ${currentPlan.monthlyPrice}
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Renews</p>
+            <p className="text-xs text-muted-foreground">
+              {cancelling ? "Access until" : "Renews"}
+            </p>
             <p className="mt-0.5 text-lg font-semibold tracking-tight">
-              {currentPlan.monthlyPrice === 0
-                ? "—"
-                : formatDate(renewal.toISOString())}
+              {paid ? periodEndLabel : "—"}
             </p>
           </div>
         </CardContent>
+
+        {paid ? (
+          <CardFooter className="flex-wrap items-center justify-between gap-3 border-t">
+            {cancelling ? (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  Your subscription ends on{" "}
+                  <strong className="text-foreground">{periodEndLabel}</strong>.
+                  You keep {currentPlan.name} until then, after which your
+                  account moves to Free.
+                </p>
+                <ResumeSubscriptionButton />
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  Cancel any time — you keep access until the end of the period
+                  you&apos;ve already paid for.
+                </p>
+                <CancelSubscriptionButton
+                  planName={currentPlan.name}
+                  periodEndLabel={periodEndLabel}
+                />
+              </>
+            )}
+          </CardFooter>
+        ) : null}
       </Card>
 
       {/* Plan comparison */}

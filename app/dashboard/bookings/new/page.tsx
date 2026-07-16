@@ -4,7 +4,7 @@ import { BookingForm } from "@/components/bookings/booking-form";
 import { BookingsLocked } from "@/components/bookings/bookings-locked";
 import { PageHeader } from "@/components/layout/page-header";
 import { requireUser } from "@/lib/auth";
-import { canUseBookings, planById } from "@/lib/plan";
+import { canUseBookings, planForUser } from "@/lib/plan";
 import { getClients } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function NewBookingPage() {
   const user = await requireUser();
-  const unlocked = canUseBookings(planById(user.planId));
+  const unlocked = canUseBookings(planForUser(user));
   const clients = unlocked ? await getClients(user.id) : [];
 
   return (

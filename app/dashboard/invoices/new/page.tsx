@@ -5,7 +5,7 @@ import { InvoiceForm } from "@/components/invoices/invoice-form";
 import { PageHeader } from "@/components/layout/page-header";
 import { requireUser } from "@/lib/auth";
 import { isOverInvoiceLimit } from "@/lib/invoices";
-import { planById } from "@/lib/plan";
+import { planForUser } from "@/lib/plan";
 import { getClients, invoiceCountThisMonth, nextInvoiceNumber } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default async function NewInvoicePage() {
     invoiceCountThisMonth(user.id),
     nextInvoiceNumber(user.id),
   ]);
-  const plan = planById(user.planId);
+  const plan = planForUser(user);
   const limitReached = isOverInvoiceLimit(plan, monthCount);
 
   return (

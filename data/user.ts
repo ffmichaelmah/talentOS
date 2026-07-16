@@ -15,5 +15,7 @@ export const currentUser: User = {
   location: "Los Angeles, CA",
   currency: "USD",
   planId: "plan-pro",
+  subscriptionStatus: "active",
+  currentPeriodEnd: null,
   createdAt: "2025-09-12T18:24:00Z",
 };

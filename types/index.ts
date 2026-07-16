@@ -38,6 +38,10 @@ export interface User {
   currency: string;
   /** References SubscriptionPlan.id */
   planId: string;
+  /** Cancelled subscriptions keep their plan until currentPeriodEnd. */
+  subscriptionStatus: SubscriptionStatus;
+  /** ISO date the paid period ends; null on Free / never-subscribed. */
+  currentPeriodEnd?: string | null;
   createdAt: string;
 }
 
@@ -422,6 +426,12 @@ export interface DocumentTemplate {
 /* ----------------------------- Subscription ------------------------------ */
 
 export type PlanInterval = "monthly" | "yearly";
+
+/**
+ * "cancelled" means the user has unsubscribed but keeps their paid plan
+ * until User.currentPeriodEnd, after which they fall back to Free.
+ */
+export type SubscriptionStatus = "active" | "cancelled";
 
 export interface PlanLimits {
   /** null = unlimited */

@@ -7,7 +7,7 @@ import { ClientsTable } from "@/components/clients/clients-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
-import { isOverClientLimit, planById } from "@/lib/plan";
+import { isOverClientLimit, planForUser } from "@/lib/plan";
 import { getClients, lastBookingByClient } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default async function ClientsPage() {
     getClients(user.id),
     lastBookingByClient(user.id),
   ]);
-  const limitReached = isOverClientLimit(planById(user.planId), clients.length);
+  const limitReached = isOverClientLimit(planForUser(user), clients.length);
 
   return (
     <>

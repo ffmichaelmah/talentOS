@@ -7,7 +7,7 @@ import { ContractsTable } from "@/components/contracts/contracts-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
-import { canUseContracts, planById } from "@/lib/plan";
+import { canUseContracts, planForUser } from "@/lib/plan";
 import { getContracts } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function ContractsPage() {
   const user = await requireUser();
   const contracts = await getContracts(user.id);
-  const unlocked = canUseContracts(planById(user.planId));
+  const unlocked = canUseContracts(planForUser(user));
 
   return (
     <>

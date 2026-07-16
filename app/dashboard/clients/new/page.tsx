@@ -4,7 +4,7 @@ import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
 import { ClientForm } from "@/components/clients/client-form";
 import { PageHeader } from "@/components/layout/page-header";
 import { requireUser } from "@/lib/auth";
-import { isOverClientLimit, planById } from "@/lib/plan";
+import { isOverClientLimit, planForUser } from "@/lib/plan";
 import { clientCount } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function NewClientPage() {
   const user = await requireUser();
   const count = await clientCount(user.id);
-  const limitReached = isOverClientLimit(planById(user.planId), count);
+  const limitReached = isOverClientLimit(planForUser(user), count);
 
   return (
     <>

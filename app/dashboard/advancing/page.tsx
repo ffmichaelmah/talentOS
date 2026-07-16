@@ -7,7 +7,7 @@ import { UpgradePrompt } from "@/components/cards/upgrade-prompt";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
-import { canUseAdvancing, planById } from "@/lib/plan";
+import { canUseAdvancing, planForUser } from "@/lib/plan";
 import { getAdvanceForms } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function AdvancingPage() {
   const user = await requireUser();
   const advanceForms = await getAdvanceForms(user.id);
-  const unlocked = canUseAdvancing(planById(user.planId));
+  const unlocked = canUseAdvancing(planForUser(user));
 
   return (
     <>

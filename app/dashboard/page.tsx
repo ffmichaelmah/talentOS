@@ -36,7 +36,7 @@ import {
   canUseAdvancing,
   canUseBookings,
   canUseContracts,
-  planById,
+  planForUser,
 } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 import { getBookings, getClients, getContracts, getInvoices } from "@/lib/queries";
@@ -59,7 +59,7 @@ const planFeatures = [
 
 export default async function DashboardOverviewPage() {
   const user = await requireUser();
-  const plan = planById(user.planId);
+  const plan = planForUser(user);
   const bookingsUnlocked = canUseBookings(plan);
   const contractsUnlocked = canUseContracts(plan);
   const advancingUnlocked = canUseAdvancing(plan);

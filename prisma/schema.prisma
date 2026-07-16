@@ -28,6 +28,10 @@ model User {
   location       String   @default("")
   currency       String   @default("USD")
   planId         String   @default("plan-free")
+  /** "active" | "cancelled" — cancelled keeps access until currentPeriodEnd. */
+  subscriptionStatus String @default("active")
+  /** ISO date the paid period ends; null on Free / never-subscribed. */
+  currentPeriodEnd   String?
   createdAt      String
 
   clients      Client[]

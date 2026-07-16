@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
 import { formatCurrency } from "@/lib/format";
 import { balanceFor, isOverInvoiceLimit } from "@/lib/invoices";
-import { planById } from "@/lib/plan";
+import { planForUser } from "@/lib/plan";
 import { getInvoices, invoiceCountThisMonth } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default async function InvoicesPage() {
     getInvoices(user.id),
     invoiceCountThisMonth(user.id),
   ]);
-  const plan = planById(user.planId);
+  const plan = planForUser(user);
   const limitReached = isOverInvoiceLimit(plan, monthCount);
   const outstanding = invoices
     .filter((i) => i.status !== "paid" && i.status !== "cancelled")

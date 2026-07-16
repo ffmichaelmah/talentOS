@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { requireUser } from "@/lib/auth";
-import { planById } from "@/lib/plan";
+import { planForUser } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default async function SettingsPage() {
   const user = await requireUser();
-  const plan = planById(user.planId);
+  const plan = planForUser(user);
 
   return (
     <>

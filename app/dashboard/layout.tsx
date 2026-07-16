@@ -2,7 +2,7 @@ import { DemoBanner } from "@/components/layout/demo-banner";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { requireUser } from "@/lib/auth";
-import { planById } from "@/lib/plan";
+import { planForUser } from "@/lib/plan";
 
 export default async function DashboardLayout({
   children,
@@ -10,7 +10,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
-  const plan = planById(user.planId);
+  const plan = planForUser(user);
   const chrome = {
     name: user.name,
     displayName: user.displayName,
