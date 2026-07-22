@@ -22,7 +22,7 @@ function SubmitButton() {
   );
 }
 
-export function SignupForm() {
+export function SignupForm({ defaultRef }: { defaultRef?: string }) {
   const [state, action] = useActionState(signupAction, undefined);
 
   return (
@@ -65,6 +65,16 @@ export function SignupForm() {
           placeholder="At least 8 characters"
           autoComplete="new-password"
           required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="referralCode">Referral code (optional)</Label>
+        <Input
+          id="referralCode"
+          name="referralCode"
+          placeholder="Enter a code if you have one"
+          defaultValue={defaultRef}
+          autoCapitalize="characters"
         />
       </div>
       <SubmitButton />

@@ -4,6 +4,7 @@ import {
   ClipboardList,
   CreditCard,
   FileSignature,
+  Gift,
   LayoutDashboard,
   LayoutTemplate,
   Receipt,
@@ -25,6 +26,7 @@ export const dashboardNav: NavItem[] = [
   { label: "Bookings", href: "/dashboard/bookings", icon: Calendar },
   { label: "Agreements", href: "/dashboard/contracts", icon: FileSignature },
   { label: "Advancing", href: "/dashboard/advancing", icon: ClipboardList },
+  { label: "Referrals", href: "/dashboard/referrals", icon: Gift },
   { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];

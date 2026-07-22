@@ -9,8 +9,11 @@ export const metadata: Metadata = {
   title: "Start Free",
 };
 
-export default async function SignupPage() {
+export default async function SignupPage(props: {
+  searchParams: Promise<{ ref?: string }>;
+}) {
   if (await getCurrentUser()) redirect("/dashboard");
+  const { ref } = await props.searchParams;
 
   return (
     <div className="space-y-8">
@@ -23,7 +26,7 @@ export default async function SignupPage() {
         </p>
       </div>
 
-      <SignupForm />
+      <SignupForm defaultRef={ref} />
 
       <p className="text-center text-xs text-muted-foreground">
         By signing up you agree to our Terms and Privacy Policy.

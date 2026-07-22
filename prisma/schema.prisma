@@ -32,6 +32,12 @@ model User {
   subscriptionStatus String @default("active")
   /** ISO date the paid period ends; null on Free / never-subscribed. */
   currentPeriodEnd   String?
+  /** Shareable code others enter at signup to be counted as this user's referral. */
+  referralCode   String?  @unique
+  /** The referrer's user id, set when signing up under a referral code. */
+  referredById   String?
+  /** Internal brand-ambassador flag — earns monthly commission, not advertised. */
+  isAmbassador   Boolean  @default(false)
   createdAt      String
 
   clients      Client[]

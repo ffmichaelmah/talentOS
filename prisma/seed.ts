@@ -18,14 +18,47 @@ import {
 
 const prisma = new PrismaClient();
 
+/** Idempotent: ensure the demo account shows the referral + ambassador program.
+ *  Safe to run on every redeploy (updates in place). */
+async function ensureReferralDemo(userId: string) {
+  await prisma.user.update({
+    where: { id: userId },
+    data: { referralCode: currentUser.referralCode, isAmbassador: true },
+  });
+  const referees = [
+    { email: "referral.dana@example.com", name: "Dana Cole", planId: "plan-pro" },
+    { email: "referral.rio@example.com", name: "Rio Santos", planId: "plan-standard" },
+    { email: "referral.sam@example.com", name: "Sam Idris", planId: "plan-free" },
+  ];
+  const passwordHash = await bcrypt.hash("referral-demo", 10);
+  for (const r of referees) {
+    await prisma.user.upsert({
+      where: { email: r.email },
+      update: { referredById: userId, planId: r.planId },
+      create: {
+        email: r.email,
+        passwordHash,
+        name: r.name,
+        displayName: r.name,
+        location: "",
+        currency: "USD",
+        planId: r.planId,
+        referredById: userId,
+        createdAt: new Date().toISOString(),
+      },
+    });
+  }
+}
+
 async function main() {
-  // Idempotent: skip when the demo account already exists so production
-  // redeploys don't wipe data. Use `npm run db:reset` to force a fresh seed.
+  // Idempotent: skip re-seeding data when the demo account exists so production
+  // redeploys don't wipe data, but always refresh the referral demo in place.
   const existing = await prisma.user.findUnique({
     where: { email: currentUser.email },
   });
   if (existing) {
-    console.log("Demo user already exists — skipping seed.");
+    await ensureReferralDemo(existing.id);
+    console.log("Demo user already exists — refreshed referral demo.");
     return;
   }
 
@@ -72,6 +105,7 @@ async function main() {
       },
     });
   }
+  await ensureReferralDemo(userId);
   const counts = {
     clients: clients.length,
     bookings: bookings.length,

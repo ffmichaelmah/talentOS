@@ -42,6 +42,12 @@ export interface User {
   subscriptionStatus: SubscriptionStatus;
   /** ISO date the paid period ends; null on Free / never-subscribed. */
   currentPeriodEnd?: string | null;
+  /** Shareable code others enter at signup. */
+  referralCode?: string | null;
+  /** Referrer's user id when this account signed up under a code. */
+  referredById?: string | null;
+  /** Internal brand-ambassador flag (20% monthly commission, not advertised). */
+  isAmbassador?: boolean;
   createdAt: string;
 }
 

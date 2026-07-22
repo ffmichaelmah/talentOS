@@ -17,5 +17,7 @@ export const currentUser: User = {
   planId: "plan-pro",
   subscriptionStatus: "active",
   currentPeriodEnd: null,
+  referralCode: "MIKEZOOKA",
+  isAmbassador: true,
   createdAt: "2025-09-12T18:24:00Z",
 };

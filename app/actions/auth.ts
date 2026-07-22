@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/password";
+import { generateReferralCode } from "@/lib/referrals";
 import { createSession, destroySession } from "@/lib/session";
 
 export type AuthState = { error?: string } | undefined;
@@ -13,6 +14,7 @@ const signupSchema = z.object({
   name: z.string().trim().min(1),
   email: z.email(),
   password: z.string().min(8),
+  referralCode: z.string().trim().optional(),
 });
 
 const loginSchema = z.object({
@@ -28,6 +30,7 @@ export async function signupAction(
     name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
+    referralCode: formData.get("referralCode") ?? undefined,
   });
   if (!parsed.success) {
     return {
@@ -39,6 +42,11 @@ export async function signupAction(
   if (existing) {
     return { error: "An account with that email already exists." };
   }
+  // Look up the referrer by their code (ignored silently if it doesn't match).
+  const code = parsed.data.referralCode?.toUpperCase();
+  const referrer = code
+    ? await prisma.user.findUnique({ where: { referralCode: code } })
+    : null;
   const user = await prisma.user.create({
     data: {
       email,
@@ -48,6 +56,8 @@ export async function signupAction(
       location: "",
       currency: "USD",
       planId: "plan-free",
+      referralCode: generateReferralCode(),
+      referredById: referrer?.id ?? null,
       createdAt: new Date().toISOString(),
     },
   });
