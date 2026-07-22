@@ -28,6 +28,11 @@ import {
   advanceTypeLabel,
   typesForCategory,
 } from "@/lib/advancing";
+import {
+  campaignSections,
+  eventSections,
+  type FieldDef,
+} from "@/lib/advance-sections";
 import type {
   AdvanceCategory,
   AdvanceForm as AdvanceFormModel,
@@ -37,57 +42,23 @@ import type {
 } from "@/types";
 import { cn } from "@/lib/utils";
 
-interface FieldDef {
-  key: string;
-  label: string;
-  long?: boolean;
-  type?: "text" | "date";
+/**
+ * a-boss-style completeness signal for a section:
+ * red = nothing gathered, amber = in progress, green = every field filled.
+ */
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+function sectionStatus(
+  fields: FieldDef[],
+  values: Record<string, string>
+): { label: string; dot: string; text: string } {
+  const filled = fields.filter((f) => values[f.key]?.trim()).length;
+  if (filled === 0)
+    return { label: "Not started", dot: "bg-rose-400", text: "text-muted-foreground" };
+  if (filled === fields.length)
+    return { label: "Complete", dot: "bg-emerald-500", text: "text-emerald-600 dark:text-emerald-400" };
+  return { label: "In progress", dot: "bg-amber-500", text: "text-amber-600 dark:text-amber-400" };
 }
-
-const eventFields: FieldDef[] = [
-  { key: "eventName", label: "Event name" },
-  { key: "eventDate", label: "Event date", type: "date" },
-  { key: "callTime", label: "Call time" },
-  { key: "performanceTime", label: "Performance time" },
-  { key: "venueName", label: "Venue name" },
-  { key: "venueAddress", label: "Venue address", long: true },
-  { key: "contactPerson", label: "Contact person" },
-  { key: "contactPhone", label: "Contact phone" },
-  { key: "clientCompany", label: "Client company" },
-  { key: "expectedCrowd", label: "Expected crowd size" },
-  { key: "dressCode", label: "Dress code" },
-  { key: "performanceDirection", label: "Music / performance direction", long: true },
-  { key: "technicalRider", label: "Technical rider", long: true },
-  { key: "soundcheckTime", label: "Soundcheck time" },
-  { key: "parkingLoading", label: "Parking / loading info", long: true },
-  { key: "hotelDetails", label: "Hotel details" },
-  { key: "flightDetails", label: "Flight details" },
-  { key: "groundTransport", label: "Ground transport details" },
-  { key: "itinerary", label: "Itinerary", long: true },
-  { key: "greenRoom", label: "Backstage / green room info", long: true },
-  { key: "mealArrangement", label: "Meal arrangement" },
-  { key: "hospitalityRider", label: "Hospitality rider", long: true },
-  { key: "specialNotes", label: "Special notes", long: true },
-];
-
-const campaignFields: FieldDef[] = [
-  { key: "brandName", label: "Brand name" },
-  { key: "campaignTitle", label: "Campaign title" },
-  { key: "deliverables", label: "Deliverables", long: true },
-  { key: "appearanceTime", label: "Appearance time" },
-  { key: "appearanceDuration", label: "Appearance duration" },
-  { key: "postingDate", label: "Posting date", type: "date" },
-  { key: "contentFormat", label: "Content format" },
-  { key: "captionRequirement", label: "Caption requirement", long: true },
-  { key: "hashtags", label: "Hashtags" },
-  { key: "tagsMentions", label: "Tags / mentions" },
-  { key: "usageRights", label: "Usage rights", long: true },
-  { key: "revisionRounds", label: "Revision rounds" },
-  { key: "approvalDeadline", label: "Approval deadline", type: "date" },
-  { key: "productDelivery", label: "Product delivery details", long: true },
-  { key: "paymentStatus", label: "Payment status" },
-  { key: "specialNotes", label: "Special notes", long: true },
-];
 
 const categoryCards: {
   value: AdvanceCategory;
@@ -117,7 +88,9 @@ export function AdvanceForm() {
     setValues({});
   }
 
-  const fields = category === "event" ? eventFields : campaignFields;
+  const sectionsForCategory =
+    category === "event" ? eventSections : campaignSections;
+  const fields = sectionsForCategory.flatMap((s) => s.fields);
   const set = (key: string, value: string) =>
     setValues((prev) => ({ ...prev, [key]: value }));
 
@@ -214,37 +187,79 @@ export function AdvanceForm() {
           </CardContent>
         </Card>
 
-        {/* Step 2 — details */}
+        {/* Step 2 — details, grouped into advancing sections */}
         <Card className="shadow-xs">
           <CardHeader>
             <CardTitle>
-              2 · {category === "event" ? "Event details" : "Campaign details"}
+              2 · {category === "event" ? "Advancing details" : "Campaign details"}
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4 sm:grid-cols-2">
-            {fields.map((f) => (
-              <div
-                key={f.key}
-                className={cn("space-y-2", f.long && "sm:col-span-2")}
-              >
-                <Label htmlFor={`af-${f.key}`}>{f.label}</Label>
-                {f.long ? (
-                  <Textarea
-                    id={`af-${f.key}`}
-                    rows={2}
-                    value={values[f.key] ?? ""}
-                    onChange={(e) => set(f.key, e.target.value)}
-                  />
-                ) : (
-                  <Input
-                    id={`af-${f.key}`}
-                    type={f.type === "date" ? "date" : "text"}
-                    value={values[f.key] ?? ""}
-                    onChange={(e) => set(f.key, e.target.value)}
-                  />
-                )}
-              </div>
-            ))}
+          <CardContent className="space-y-7">
+            {sectionsForCategory.map((section) => {
+              const status = sectionStatus(section.fields, values);
+              return (
+                <section key={section.title} id={slug(section.title)} className="scroll-mt-24 space-y-3">
+                  <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-2">
+                    <div>
+                      <h3 className="text-sm font-semibold">{section.title}</h3>
+                      {section.blurb ? (
+                        <p className="text-xs text-muted-foreground">
+                          {section.blurb}
+                        </p>
+                      ) : null}
+                    </div>
+                    <span
+                      className={cn(
+                        "mt-0.5 flex shrink-0 items-center gap-1.5 text-xs font-medium",
+                        status.text
+                      )}
+                    >
+                      <span className={cn("size-1.5 rounded-full", status.dot)} />
+                      {status.label}
+                    </span>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {section.fields.map((f) => (
+                      <div
+                        key={f.key}
+                        className={cn("space-y-2", f.long && "sm:col-span-2")}
+                      >
+                        {f.type !== "check" ? (
+                          <Label htmlFor={`af-${f.key}`}>{f.label}</Label>
+                        ) : null}
+                        {f.type === "check" ? (
+                          <label className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              className="size-4 accent-emerald-500"
+                              checked={values[f.key] === "yes"}
+                              onChange={(e) => set(f.key, e.target.checked ? "yes" : "")}
+                            />
+                            {f.label}
+                          </label>
+                        ) : f.long ? (
+                          <Textarea
+                            id={`af-${f.key}`}
+                            rows={2}
+                            placeholder={f.placeholder}
+                            value={values[f.key] ?? ""}
+                            onChange={(e) => set(f.key, e.target.value)}
+                          />
+                        ) : (
+                          <Input
+                            id={`af-${f.key}`}
+                            type={f.type ?? "text"}
+                            placeholder={f.placeholder}
+                            value={values[f.key] ?? ""}
+                            onChange={(e) => set(f.key, e.target.value)}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
           </CardContent>
         </Card>
       </div>
@@ -283,6 +298,27 @@ export function AdvanceForm() {
                 />
               </div>
             </div>
+            {/* Section checklist — jump to any section, see its status. */}
+            <nav className="space-y-0.5">
+              {sectionsForCategory.map((section) => {
+                const status = sectionStatus(section.fields, values);
+                return (
+                  <a
+                    key={section.title}
+                    href={`#${slug(section.title)}`}
+                    className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-muted"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className={cn("size-1.5 shrink-0 rounded-full", status.dot)} />
+                      <span className="truncate">{section.title}</span>
+                    </span>
+                    <span className={cn("shrink-0 font-medium", status.text)}>
+                      {status.label}
+                    </span>
+                  </a>
+                );
+              })}
+            </nav>
           </CardContent>
         </Card>
 

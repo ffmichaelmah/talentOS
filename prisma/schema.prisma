@@ -164,6 +164,7 @@ model AdvanceForm {
   date            String?
   shareEnabled    Boolean @default(false)
   shareViewed     Boolean @default(false)
+  clientLocked    Boolean @default(false) // client confirmed; edits locked until reopened
   eventDetails    String? // JSON: EventAdvanceDetails
   campaignDetails String? // JSON: CampaignAdvanceDetails
   createdAt       String

@@ -550,4 +550,237 @@ SIGNED for the Artist: {{talent.displayName}}, {{talent.businessName}}`,
     createdAt: "2026-06-12T08:10:00Z",
     updatedAt: "2026-06-12T08:10:00Z",
   },
+  {
+    id: "template-10",
+    kind: "contract",
+    name: "International Engagement Contract (Agency)",
+    description:
+      "Comprehensive three-party engagement contract (artist, agency, and booking company) modeled on international DJ/live booking agreements — full lettered schedule (performance, fee, payment terms, billing approval, hotel, flights) plus complete terms: travel-approval deadlines, cancellation windows, no-recording, licences & insurance, visas, force majeure, and governing law.",
+    status: "published",
+    version: 1,
+    isDefault: false,
+    minPlanId: "plan-pro",
+    body: `ENGAGEMENT CONTRACT {{document.number}}
+An agreement dated {{document.issueDate}}
+
+BETWEEN:
+{{client.company}} ("the Company"), represented by {{client.name}} ({{client.email}}), of the one part;
+AND {{talent.displayName}} ("the Artist"), of the other part, booked through {{talent.businessName}} ("the Agency").
+
+IT IS HEREBY AGREED that the Company engages the Artist and the Artist accepts the engagement to appear and perform ("the Performance") at the Event, Venue, Date and Duration, and for the Fees set out in the Schedule below, subject to the Terms and Conditions and any Rider attached. This contract comprises the Schedule, the Terms and Conditions, and any attached Rider.
+
+SCHEDULE
+
+(a) PERFORMANCE
+Event:     {{booking.title}}
+Venue:     {{booking.venueName}}
+Date:      {{booking.startTime}}
+Duration:  {{fields.setLength}} minutes ({{fields.setTime}})
+
+(b) CONSIDERATION
+Artist Fee:            {{booking.fee}}
+Bank / Management Fee: {{fields.bankFee}}
+Payment schedule:      {{fields.paymentSchedule}}
+Failure by the Company to comply with the payment schedule is a material breach entitling the Artist to terminate immediately without notice. An invoice for the fee will be issued on receipt of the signed contract.
+
+(c) BILLING & ADVERTISING
+{{fields.billing}} billing; the Artist to be billed as {{talent.displayName}}. All artwork must be approved by the Agency before print, and no promotion may take place until the deposit has cleared and the artwork is approved in writing. No rights in the Artist's name, likeness, logo or biography are granted beyond the billing set out above.
+
+(d) TECHNICAL
+As per the Rider attached.
+
+(e) HOTEL ACCOMMODATION
+{{fields.hotel}}
+
+(f) GROUND TRANSPORT & FLIGHTS
+{{fields.transport}} Ground transport to be provided with a driver engaged by the Company between airport, hotel and Venue. The Company bears any excess-baggage costs for the Artist's equipment, and shall provide a reserved parking space adjacent to the Venue.
+
+TERMS AND CONDITIONS
+
+1. TRAVEL APPROVALS. The Company shall provide the Agency with flight, ground-transport, hotel and (where applicable) work-permit/visa options no later than six (6) weeks before the Date. No arrangements shall be booked until approved in writing by or on behalf of the Artist. Time is of the essence.
+
+2. CANCELLATION. Cancellation by the Company is acceptable only under Force Majeure, in which case the deposit and any booking fee are non-refundable. Otherwise: (a) cancellation within {{fields.cancellationWindow}} weeks of the Date renders the full fee due and payable; (b) cancellation earlier than that renders only the deposit and booking fee due, which the Artist may retain.
+
+3. TERMINATION. The Artist may terminate immediately by written notice if the Company breaches this contract, fails to pay on time, or becomes insolvent. On termination, all outstanding fees become payable within five (5) days of notice, without prejudice to the Artist's other remedies.
+
+4. RECORDING & BROADCAST. No audio or audio-visual recording, broadcast or transmission of the Performance may be made or permitted by the Company by any means without the Artist's prior written approval, and the Company shall take reasonable security steps to prevent it.
+
+5. LICENCES, INSURANCE & SECURITY. The Company shall, at its own cost, obtain all consents, licences (including public-performance licences), permits, safety certificates and insurances required by law before the Date, maintain public-liability insurance, and provide adequate security for the Artist from arrival until departure — at least two security personnel at the Venue on the night of the Performance.
+
+6. RELATIONSHIP. Nothing in this contract creates a relationship of principal and agent, or of employer and employee, between the parties.
+
+7. FORCE MAJEURE. The Artist is not liable for non-appearance caused by public calamity, civil or political unrest, armed conflict, epidemic, fire, strikes or Acts of God, or other factors beyond the Artist's control. In the case of illness a doctor's certificate will be produced and the deposit and booking fee refunded.
+
+8. AGENCY. The Agency is responsible only for placing the Artist and is not liable for the fulfilment of this contract by either party. Any booking fee is payable with the deposit and is non-refundable on cancellation.
+
+9. VISAS & PERMITS. It is the Company's responsibility, at its own cost, to obtain all visas and work permits required for the Artist and touring party for the Date(s).
+
+10. INDEMNITY & CONFIDENTIALITY. Each party indemnifies the other against claims arising from its breach of this contract, and each shall keep the terms of this contract confidential.
+
+11. LIABILITY. Either party's liability for breach is capped at the total fees (less any booking fee) actually paid by the Company.
+
+12. GOVERNING LAW. This contract is governed by the laws of {{fields.governingLaw}}, and disputes are subject to the exclusive jurisdiction of its courts.
+
+13. ENTIRE AGREEMENT. This contract is the entire agreement between the parties, supersedes all prior agreements, may be amended only in writing signed by both parties, confers no rights on third parties, and may be executed in counterparts.
+
+SIGNED for the Company: {{client.name}}, {{client.company}}
+SIGNED for the Artist / Agency: {{talent.displayName}}, {{talent.businessName}}
+Date: {{document.issueDate}}`,
+    fields: [
+      { id: "tf-10a", key: "setLength", label: "Set length (minutes)", type: "number", required: true },
+      { id: "tf-10b", key: "setTime", label: "Set time", type: "text", required: false, placeholder: "23:00–00:30 (TBC)" },
+      { id: "tf-10c", key: "bankFee", label: "Bank / management fee", type: "currency", required: false },
+      {
+        id: "tf-10d",
+        key: "paymentSchedule",
+        label: "Payment schedule",
+        type: "textarea",
+        required: true,
+        placeholder: "100% of the artist fee due upon signing of the contract",
+      },
+      {
+        id: "tf-10e",
+        key: "billing",
+        label: "Billing",
+        type: "select",
+        required: true,
+        options: ["100% headline", "Co-headline", "Support", "Special guest"],
+      },
+      { id: "tf-10f", key: "hotel", label: "Hotel accommodation", type: "text", required: false, placeholder: "1 king room, 2 nights, min 5*, incl. breakfast" },
+      { id: "tf-10g", key: "transport", label: "Transport & flights", type: "text", required: false, placeholder: "1 economy flight, booked & paid by the Company." },
+      { id: "tf-10h", key: "cancellationWindow", label: "Cancellation window (weeks)", type: "number", required: true, placeholder: "6" },
+      { id: "tf-10i", key: "governingLaw", label: "Governing law (jurisdiction)", type: "text", required: true, placeholder: "Malaysia" },
+    ],
+    usageCount: 0,
+    createdBy: "TalentOS",
+    createdAt: "2026-07-21T09:00:00Z",
+    updatedAt: "2026-07-21T09:00:00Z",
+  },
+  {
+    id: "template-11",
+    kind: "contract",
+    name: "Direct Booking Agreement (No Agency)",
+    description:
+      "Two-party performance agreement for talents who book directly with a venue or promoter — no agency involved. Covers performance details, fee and deposit schedule, cancellation, recording restrictions, and force majeure, without the agency and booking-fee terms.",
+    status: "published",
+    version: 1,
+    isDefault: false,
+    minPlanId: "plan-starter",
+    body: `PERFORMANCE AGREEMENT {{document.number}}
+Dated {{document.issueDate}}
+
+BETWEEN {{client.company}} ("the Company"), represented by {{client.name}} ({{client.email}}),
+AND {{talent.displayName}} of {{talent.businessName}} ("the Artist").
+
+The Company engages the Artist to perform ("the Performance") as set out below, subject to the terms that follow. No agency or third party is involved in this booking.
+
+PERFORMANCE
+Event:    {{booking.title}}
+Venue:    {{booking.venueName}}
+Date:     {{booking.startTime}}
+Duration: {{fields.setLength}} minutes ({{fields.setTime}})
+
+FEE & PAYMENT
+Total fee: {{booking.fee}}
+Deposit:   {{fields.depositAmount}} due on signing to confirm the booking.
+Balance:   due {{fields.balanceDue}}.
+Late or partial payment is a material breach entitling the Artist to terminate immediately.
+
+TERMS
+1. CANCELLATION. Cancellation by the Company within {{fields.cancellationWindow}} days of the Date renders the full fee due; earlier cancellation forfeits the deposit.
+2. RECORDING. No recording or broadcast of the Performance may be made or permitted without the Artist's prior written approval.
+3. VENUE & SAFETY. The Company shall, at its own cost, obtain all necessary licences and insurances and provide safe working conditions and reasonable security for the Artist.
+4. FORCE MAJEURE. Neither party is liable for failure to perform due to events beyond its reasonable control (illness, Acts of God, civil unrest, epidemic). In the case of Artist illness a doctor's certificate will be produced and the deposit refunded.
+5. RELATIONSHIP. Nothing here creates an employment or agency relationship between the parties.
+6. LIABILITY. Each party's liability for breach is capped at the total fee actually paid.
+7. GOVERNING LAW. This agreement is governed by the laws of {{fields.governingLaw}}.
+
+SIGNED for the Company: {{client.name}}, {{client.company}}
+SIGNED by the Artist: {{talent.displayName}}, {{talent.businessName}}
+Date: {{document.issueDate}}`,
+    fields: [
+      { id: "tf-11a", key: "setLength", label: "Set length (minutes)", type: "number", required: true },
+      { id: "tf-11b", key: "setTime", label: "Set time", type: "text", required: false, placeholder: "22:00–23:30" },
+      { id: "tf-11c", key: "depositAmount", label: "Deposit amount", type: "currency", required: true },
+      {
+        id: "tf-11d",
+        key: "balanceDue",
+        label: "Balance due",
+        type: "select",
+        required: true,
+        options: ["On event day", "Net 7", "Net 15", "Net 30"],
+      },
+      { id: "tf-11e", key: "cancellationWindow", label: "Cancellation window (days)", type: "number", required: true, placeholder: "14" },
+      { id: "tf-11f", key: "governingLaw", label: "Governing law (jurisdiction)", type: "text", required: true, placeholder: "California, USA" },
+    ],
+    usageCount: 0,
+    createdBy: "TalentOS",
+    createdAt: "2026-07-21T09:05:00Z",
+    updatedAt: "2026-07-21T09:05:00Z",
+  },
+  {
+    id: "template-12",
+    kind: "contract",
+    name: "Technical & Hospitality Rider",
+    description:
+      "Companion rider that attaches to a booking agreement and lists the technical setup (sound, DJ equipment, monitoring) and hospitality requirements (green room, catering, guest list) the Company must provide. Referenced by the agreement's “as per attached Rider” clause.",
+    status: "published",
+    version: 1,
+    isDefault: false,
+    minPlanId: "plan-starter",
+    body: `TECHNICAL & HOSPITALITY RIDER
+Attached to and forming part of engagement {{document.number}} dated {{document.issueDate}}.
+
+Artist: {{talent.displayName}} ({{talent.businessName}})
+Event:  {{booking.title}} — {{booking.venueName}}, {{booking.startTime}}
+
+This Rider forms an integral part of the engagement. The Company guarantees timely fulfilment of all requirements at its own cost and warrants that all equipment is in good working order. Failure to comply entitles the Artist to cancel while the Company remains liable for the fee.
+
+1. SOUND SYSTEM
+{{fields.soundSystem}}
+A professional, tested PA appropriate to the Venue capacity, free of hum and distortion, with a competent house engineer present at soundcheck and throughout the Performance.
+
+2. DJ EQUIPMENT / BACKLINE
+{{fields.djEquipment}}
+All equipment to be set up, tested and working before the Artist's arrival.
+
+3. MONITORING
+{{fields.monitoring}}
+
+4. SOUNDCHECK
+Soundcheck at {{fields.soundcheckTime}} with full technical crew present.
+
+5. STAGE & POWER
+Clean, stable power to the booth/stage, adequate lighting, and safe cable management. Booth positioned with a clear view of the dancefloor.
+
+6. GREEN ROOM & HOSPITALITY
+{{fields.greenRoom}}
+Stocked as follows:
+{{fields.hospitality}}
+
+7. GUEST LIST
+{{fields.guestList}} complimentary guest-list places for the Artist's party.
+
+8. SECURITY
+Adequate security from the Artist's arrival until departure, including the green room and stage/booth area.
+
+9. SETTLEMENT
+Any outstanding balance to be settled in cleared funds before the Performance, per the engagement.
+
+Agreed on behalf of the Company: {{client.name}}, {{client.company}}
+Artist: {{talent.displayName}}, {{talent.businessName}}`,
+    fields: [
+      { id: "tf-12a", key: "soundSystem", label: "Sound system", type: "textarea", required: false, placeholder: "e.g. Funktion-One / d&b, sized for the room, with a house engineer" },
+      { id: "tf-12b", key: "djEquipment", label: "DJ equipment / backline", type: "textarea", required: true, placeholder: "2× Pioneer CDJ-3000, 1× DJM-900NXS2, 1× booth monitor" },
+      { id: "tf-12c", key: "monitoring", label: "Monitoring", type: "text", required: false, placeholder: "1× dedicated booth monitor + sub" },
+      { id: "tf-12d", key: "soundcheckTime", label: "Soundcheck time", type: "time", required: false },
+      { id: "tf-12e", key: "greenRoom", label: "Green room", type: "text", required: false, placeholder: "Private, secure, climate-controlled room for up to 4" },
+      { id: "tf-12f", key: "hospitality", label: "Hospitality / catering", type: "textarea", required: false, placeholder: "Bottled water, ice, towels, 1 bottle premium spirit, mixers, light meal" },
+      { id: "tf-12g", key: "guestList", label: "Guest-list places", type: "number", required: false, placeholder: "4" },
+    ],
+    usageCount: 0,
+    createdBy: "TalentOS",
+    createdAt: "2026-07-21T09:10:00Z",
+    updatedAt: "2026-07-21T09:10:00Z",
+  },
 ];

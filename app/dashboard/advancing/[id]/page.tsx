@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { AdvanceActions } from "@/components/advancing/advance-actions";
 import { AdvanceDocument } from "@/components/advancing/advance-document";
+import { ReopenButton } from "@/components/advancing/reopen-button";
 import { ShareLink } from "@/components/advancing/share-link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,8 +54,9 @@ export default async function AdvanceDetailPage(
         <AdvanceDocument form={form} />
         {form.shareEnabled ? (
           <Card className="shadow-xs xl:sticky xl:top-24">
-            <CardContent>
+            <CardContent className="space-y-4">
               <ShareLink slug={form.id} />
+              {form.clientLocked ? <ReopenButton id={form.id} /> : null}
             </CardContent>
           </Card>
         ) : null}

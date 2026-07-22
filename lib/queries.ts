@@ -259,6 +259,14 @@ export async function getAdvanceForms(userId: string): Promise<AdvanceForm[]> {
   return rows.map((r) => parseAdvance(r, names));
 }
 
+/** Public: a shared advance by id, only when the owner enabled sharing. */
+export async function getSharedAdvance(id: string): Promise<AdvanceForm | null> {
+  const row = await prisma.advanceForm.findFirst({
+    where: { id, shareEnabled: true },
+  });
+  return row ? parseAdvance(row, {}) : null;
+}
+
 export async function getAdvanceFormById(
   userId: string,
   id: string

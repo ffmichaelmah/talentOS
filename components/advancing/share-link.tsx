@@ -18,7 +18,11 @@ export function ShareLink({
   slug?: string;
   className?: string;
 }) {
-  const url = `https://talentos.app/advance/${slug}`;
+  const [origin, setOrigin] = React.useState("");
+  // Read the running app's origin after mount so the copied link is absolute.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  React.useEffect(() => setOrigin(window.location.origin), []);
+  const url = `${origin}/advance/${slug}`;
   const [copied, setCopied] = React.useState(false);
   const [shared, setShared] = React.useState(false);
 

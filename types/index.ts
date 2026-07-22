@@ -295,28 +295,71 @@ export type AdvanceFormType =
 
 /** Logistics collected ahead of an event, performance, or booking. */
 export interface EventAdvanceDetails {
+  // Schedule & performance
   eventName?: string;
   eventDate?: string;
   callTime?: string;
+  soundcheckTime?: string;
   performanceTime?: string;
-  venueName?: string;
-  venueAddress?: string;
-  contactPerson?: string;
-  contactPhone?: string;
-  clientCompany?: string;
+  setDuration?: string;
   expectedCrowd?: string;
   dressCode?: string;
   performanceDirection?: string;
-  technicalRider?: string;
-  soundcheckTime?: string;
+  // Artist / manager contact (your side)
+  advancingPic?: string;
+  advancingPicPhone?: string;
+  advancingPicEmail?: string;
+  // Client-side PIC (their side)
+  contactPerson?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  onSiteContact?: string; // day-of / on-site contact
+  // Venue
+  venueName?: string;
+  clientCompany?: string;
+  venueAddress?: string;
   parkingLoading?: string;
-  hotelDetails?: string;
-  flightDetails?: string;
-  groundTransport?: string;
-  itinerary?: string;
+  // Technical rider (DJ / performer)
+  djEquipment?: string;
+  monitors?: string;
+  technicalRider?: string;
+  // Hospitality rider
   greenRoom?: string;
   mealArrangement?: string;
+  guestList?: string;
   hospitalityRider?: string;
+  // Accommodation
+  hotelName?: string;
+  hotelConfirmation?: string;
+  hotelPhone?: string;
+  hotelAddress?: string;
+  roomType?: string;
+  checkInDate?: string;
+  checkInTime?: string;
+  checkOutDate?: string;
+  checkOutTime?: string;
+  hotelDetails?: string;
+  // Departure (outbound) flight
+  outFlightNumber?: string;
+  outDepartAirport?: string;
+  outDepartDate?: string;
+  outDepartTime?: string;
+  outArriveAirport?: string;
+  outArriveDate?: string;
+  outArriveTime?: string;
+  // Return (inbound) flight
+  retFlightNumber?: string;
+  retDepartAirport?: string;
+  retDepartDate?: string;
+  retDepartTime?: string;
+  retArriveAirport?: string;
+  retArriveDate?: string;
+  retArriveTime?: string;
+  // Ground transport
+  groundTransport?: string;
+  driverContact?: string;
+  itinerary?: string;
+  // Notes
   specialNotes?: string;
 }
 
@@ -335,6 +378,9 @@ export interface CampaignAdvanceDetails {
   usageRights?: string;
   revisionRounds?: string;
   approvalDeadline?: string;
+  draftLink?: string; // content draft submitted for brand approval
+  draftApproved?: string; // "yes" once the client approves the draft
+  postLink?: string; // final published post
   productDelivery?: string;
   paymentStatus?: string;
   specialNotes?: string;
@@ -360,6 +406,8 @@ export interface AdvanceForm {
   shareEnabled: boolean;
   /** Whether the client has opened the shared link. */
   shareViewed?: boolean;
+  /** Client confirmed their details; the share link is read-only until reopened. */
+  clientLocked?: boolean;
   eventDetails?: EventAdvanceDetails;
   campaignDetails?: CampaignAdvanceDetails;
   createdAt: string;

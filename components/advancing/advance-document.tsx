@@ -9,6 +9,7 @@ interface Row {
   label: string;
   value?: string;
   full?: boolean;
+  link?: boolean;
 }
 
 function Section({ title, rows }: { title: string; rows: Row[] }) {
@@ -26,7 +27,20 @@ function Section({ title, rows }: { title: string; rows: Row[] }) {
               <Check className="size-3 text-primary" />
               {r.label}
             </dt>
-            <dd className="mt-0.5 text-sm">{r.value}</dd>
+            <dd className="mt-0.5 text-sm">
+              {r.link ? (
+                <a
+                  href={r.value}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-all text-primary underline underline-offset-2"
+                >
+                  {r.value}
+                </a>
+              ) : (
+                r.value
+              )}
+            </dd>
           </div>
         ))}
       </dl>
@@ -50,52 +64,109 @@ export function AdvanceDocument({
   const e = form.eventDetails ?? {};
   const c = form.campaignDetails ?? {};
 
+  // Join structured date/time/airport parts into one readable value.
+  const join = (...parts: (string | undefined)[]) =>
+    parts.filter((p) => p && p.trim() !== "").join(" · ") || undefined;
+  const checkIn = join(e.checkInDate, e.checkInTime);
+  const checkOut = join(e.checkOutDate, e.checkOutTime);
+  const outDepart = join(e.outDepartAirport, e.outDepartDate, e.outDepartTime);
+  const outArrive = join(e.outArriveAirport, e.outArriveDate, e.outArriveTime);
+  const retDepart = join(e.retDepartAirport, e.retDepartDate, e.retDepartTime);
+  const retArrive = join(e.retArriveAirport, e.retArriveDate, e.retArriveTime);
+
   const eventSections: { title: string; rows: Row[] }[] = [
     {
-      title: "Event details",
+      title: "Schedule & performance",
       rows: [
         { label: "Event name", value: e.eventName },
         { label: "Event date", value: e.eventDate },
         { label: "Call time", value: e.callTime },
-        { label: "Performance time", value: e.performanceTime },
         { label: "Soundcheck time", value: e.soundcheckTime },
+        { label: "Performance time", value: e.performanceTime },
+        { label: "Set duration", value: e.setDuration },
         { label: "Expected crowd size", value: e.expectedCrowd },
         { label: "Dress code", value: e.dressCode },
+        { label: "Music / performance direction", value: e.performanceDirection, full: true },
       ],
     },
     {
-      title: "Venue & contact",
+      title: "Artist / manager contact",
+      rows: [
+        { label: "Name", value: e.advancingPic },
+        { label: "Contact number", value: e.advancingPicPhone },
+        { label: "Email", value: e.advancingPicEmail },
+      ],
+    },
+    {
+      title: "Client-side PIC",
+      rows: [
+        { label: "Name", value: e.contactPerson },
+        { label: "Contact number", value: e.contactPhone },
+        { label: "Email", value: e.contactEmail },
+        { label: "On-site / day-of contact", value: e.onSiteContact, full: true },
+      ],
+    },
+    {
+      title: "Venue",
       rows: [
         { label: "Venue name", value: e.venueName },
         { label: "Client company", value: e.clientCompany },
         { label: "Venue address", value: e.venueAddress, full: true },
-        { label: "Contact person", value: e.contactPerson },
-        { label: "Contact phone", value: e.contactPhone },
         { label: "Parking / loading", value: e.parkingLoading, full: true },
       ],
     },
     {
-      title: "Direction & technical",
+      title: "Technical rider",
       rows: [
-        { label: "Music / performance direction", value: e.performanceDirection, full: true },
-        { label: "Technical rider", value: e.technicalRider, full: true },
+        { label: "DJ setup / equipment", value: e.djEquipment, full: true },
+        { label: "Monitors", value: e.monitors },
+        { label: "Additional technical notes", value: e.technicalRider, full: true },
       ],
     },
     {
-      title: "Travel & logistics",
-      rows: [
-        { label: "Hotel details", value: e.hotelDetails },
-        { label: "Flight details", value: e.flightDetails },
-        { label: "Ground transport", value: e.groundTransport },
-        { label: "Itinerary", value: e.itinerary, full: true },
-      ],
-    },
-    {
-      title: "On-site & hospitality",
+      title: "Hospitality rider",
       rows: [
         { label: "Backstage / green room", value: e.greenRoom, full: true },
         { label: "Meal arrangement", value: e.mealArrangement },
-        { label: "Hospitality rider", value: e.hospitalityRider },
+        { label: "Guest-list places", value: e.guestList },
+        { label: "Drinks / catering rider", value: e.hospitalityRider, full: true },
+      ],
+    },
+    {
+      title: "Accommodation",
+      rows: [
+        { label: "Hotel name", value: e.hotelName },
+        { label: "Confirmation number", value: e.hotelConfirmation },
+        { label: "Hotel phone", value: e.hotelPhone },
+        { label: "Room type / nights", value: e.roomType },
+        { label: "Hotel address", value: e.hotelAddress, full: true },
+        { label: "Check-in", value: checkIn },
+        { label: "Check-out", value: checkOut },
+        { label: "Accommodation notes", value: e.hotelDetails, full: true },
+      ],
+    },
+    {
+      title: "Departure flight",
+      rows: [
+        { label: "Flight number", value: e.outFlightNumber },
+        { label: "Departs", value: outDepart },
+        { label: "Arrives", value: outArrive },
+      ],
+    },
+    {
+      title: "Return flight",
+      rows: [
+        { label: "Flight number", value: e.retFlightNumber },
+        { label: "Departs", value: retDepart },
+        { label: "Arrives", value: retArrive },
+      ],
+    },
+    {
+      title: "Ground transport",
+      rows: [
+        { label: "Ground transport", value: e.groundTransport },
+        { label: "Driver / transfer contact", value: e.driverContact },
+        { label: "Itinerary", value: e.itinerary, full: true },
       ],
     },
     {
@@ -131,6 +202,14 @@ export function AdvanceDocument({
         { label: "Hashtags", value: c.hashtags },
         { label: "Tags / mentions", value: c.tagsMentions },
         { label: "Usage rights", value: c.usageRights, full: true },
+      ],
+    },
+    {
+      title: "Draft & post",
+      rows: [
+        { label: "Draft submission & approval link", value: c.draftLink, full: true, link: true },
+        { label: "Draft status", value: c.draftApproved === "yes" ? "✓ Approved by client" : undefined },
+        { label: "Published post link", value: c.postLink, full: true, link: true },
       ],
     },
     {
