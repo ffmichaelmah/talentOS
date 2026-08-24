@@ -44,7 +44,7 @@ export function UpgradePrompt({
     <Card className="relative overflow-hidden border-primary/20 shadow-xs">
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent"
+        className="absolute inset-0 bg-muted"
       />
       <CardContent className="relative flex flex-wrap items-center justify-between gap-4 py-2">
         <div className="flex items-start gap-3">

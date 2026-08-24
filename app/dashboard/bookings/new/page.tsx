@@ -11,10 +11,13 @@ export const metadata: Metadata = {
   title: "Add booking",
 };
 
-export default async function NewBookingPage() {
+export default async function NewBookingPage(props: {
+  searchParams: Promise<{ client?: string }>;
+}) {
   const user = await requireUser();
   const unlocked = canUseBookings(planForUser(user));
   const clients = unlocked ? await getClients(user.id) : [];
+  const { client } = await props.searchParams;
 
   return (
     <>
@@ -23,7 +26,11 @@ export default async function NewBookingPage() {
         description="Log a gig and track it through your pipeline."
       />
       {unlocked ? (
-        <BookingForm clients={clients} currency={user.currency} />
+        <BookingForm
+          clients={clients}
+          currency={user.currency}
+          defaultClientId={client}
+        />
       ) : (
         <BookingsLocked />
       )}

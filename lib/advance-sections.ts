@@ -181,6 +181,31 @@ export function sectionsFor(category: AdvanceCategory): Section[] {
   return category === "event" ? eventSections : campaignSections;
 }
 
+/** Stable id for a section, used for anchors and per-section status. */
+export const sectionSlug = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+export function clientEditableSections(category: AdvanceCategory): Section[] {
+  return sectionsFor(category).filter((s) => s.clientEditable);
+}
+
+export type SectionState = "complete" | "skipped";
+export type SectionStates = Record<string, SectionState>;
+
+/** Keys belonging to sections the client has already marked complete. */
+export function lockedKeys(
+  category: AdvanceCategory,
+  states: SectionStates
+): Set<string> {
+  const locked = new Set<string>();
+  for (const s of sectionsFor(category)) {
+    if (states[sectionSlug(s.title)] === "complete") {
+      for (const f of s.fields) locked.add(f.key);
+    }
+  }
+  return locked;
+}
+
 /** Keys the client may edit via the share link — the whitelist the save
  *  action enforces server-side, so it can't be bypassed from the browser. */
 export function clientEditableKeys(category: AdvanceCategory): Set<string> {

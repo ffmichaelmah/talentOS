@@ -195,7 +195,7 @@ export default function FeaturesPage() {
             <div className={cn("relative", i % 2 === 1 && "lg:order-1")}>
               <div
                 aria-hidden
-                className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-tr from-primary/15 to-transparent blur-xl"
+                className="absolute -inset-4 -z-10 rounded-3xl bg-muted blur-xl"
               />
               <div className="rounded-2xl border border-border/70 bg-card p-5 shadow-xl shadow-primary/5">
                 {item.preview}

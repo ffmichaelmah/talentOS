@@ -12,8 +12,8 @@ export function ReopenButton({ id }: { id: string }) {
   return (
     <div className="space-y-2 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
       <p className="text-xs text-muted-foreground">
-        The client confirmed and locked their details. Reopen to let them edit
-        again with a fresh link.
+        The client has confirmed or skipped sections. Reopen to clear their
+        confirmations and let them edit everything again.
       </p>
       <Button
         variant="outline"

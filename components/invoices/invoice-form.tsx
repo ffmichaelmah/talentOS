@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { createInvoiceAction } from "@/app/actions/invoices";
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -63,11 +64,14 @@ export function InvoiceForm({
   clients,
   defaultNumber,
   talent,
+  defaultClientId,
 }: {
   clients: Client[];
   defaultNumber: string;
   talent: InvoiceTalent;
+  defaultClientId?: string;
 }) {
+  const initialClient = clients.find((c) => c.id === defaultClientId);
   // 1. Talent details
   const [talentName, setTalentName] = React.useState(
     talent.businessName ?? talent.name
@@ -79,12 +83,19 @@ export function InvoiceForm({
     talent.paymentDetails ?? ""
   );
 
-  // 2. Client details
-  const [clientName, setClientName] = React.useState("");
-  const [clientCompany, setClientCompany] = React.useState("");
-  const [clientEmail, setClientEmail] = React.useState("");
-  const [clientPhone, setClientPhone] = React.useState("");
-  const [clientAddress, setClientAddress] = React.useState("");
+  // 2. Client details (preselected when arriving from a client's page)
+  const [selectedClientId, setSelectedClientId] = React.useState<string | null>(
+    initialClient?.id ?? null
+  );
+  const [clientName, setClientName] = React.useState(initialClient?.name ?? "");
+  const [clientCompany, setClientCompany] = React.useState(
+    initialClient?.company ?? ""
+  );
+  const [clientEmail, setClientEmail] = React.useState(initialClient?.email ?? "");
+  const [clientPhone, setClientPhone] = React.useState(initialClient?.phone ?? "");
+  const [clientAddress, setClientAddress] = React.useState(
+    initialClient?.location ?? ""
+  );
 
   // 3. Invoice details
   const [invoiceNumber, setInvoiceNumber] = React.useState(defaultNumber);
@@ -124,13 +135,16 @@ export function InvoiceForm({
   };
 
   function prefillClient(id: string | null) {
-    const client = clients.find((c) => c.id === id);
-    if (!client) return;
-    setClientName(client.name);
-    setClientCompany(client.company ?? "");
-    setClientEmail(client.email);
-    setClientPhone(client.phone ?? "");
-    setClientAddress(client.location ?? "");
+    const client =
+      id && id !== NO_CLIENT ? clients.find((c) => c.id === id) : undefined;
+    setSelectedClientId(client?.id ?? null);
+    // Switching back to "New client" clears the fields — otherwise the
+    // previous client's details would be saved as a brand-new duplicate.
+    setClientName(client?.name ?? "");
+    setClientCompany(client?.company ?? "");
+    setClientEmail(client?.email ?? "");
+    setClientPhone(client?.phone ?? "");
+    setClientAddress(client?.location ?? "");
   }
 
   const feeAmount = num(fee);
@@ -139,6 +153,40 @@ export function InvoiceForm({
   const total = feeAmount - discountAmount + taxAmount;
   const depositAmount = num(deposit);
   const balance = total - depositAmount;
+
+  const [pending, startTransition] = React.useTransition();
+  const [error, setError] = React.useState<string | null>(null);
+
+  function save(status: "draft" | "sent") {
+    setError(null);
+    startTransition(async () => {
+      const res = await createInvoiceAction({
+        clientId: selectedClientId ?? undefined,
+        clientName,
+        clientCompany,
+        clientEmail,
+        clientPhone,
+        clientAddress,
+        invoiceNumber,
+        issueDate: invoiceDate,
+        dueDate,
+        currency,
+        status,
+        serviceDescription,
+        eventName,
+        eventDate,
+        location: eventLocation,
+        fee: feeAmount,
+        deposit: depositAmount,
+        taxPercent: num(taxPercent),
+        discount: discountAmount,
+        paymentTerms,
+        cancellationTerms,
+        notes,
+      });
+      if (res?.error) setError(res.error);
+    });
+  }
 
   return (
     <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -201,7 +249,7 @@ export function InvoiceForm({
               <Field label="Choose existing client (optional)">
                 <Select
                   items={clientItems}
-                  defaultValue={NO_CLIENT}
+                  defaultValue={initialClient?.id ?? NO_CLIENT}
                   onValueChange={(value) => prefillClient(value)}
                 >
                   <SelectTrigger className="w-full sm:w-72">
@@ -582,7 +630,10 @@ export function InvoiceForm({
           </CardContent>
         </Card>
 
-        <InvoiceActions />
+        {error ? (
+          <p role="alert" className="text-sm text-destructive">{error}</p>
+        ) : null}
+        <InvoiceActions onSubmit={save} pending={pending} />
       </div>
     </div>
   );

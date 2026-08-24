@@ -12,6 +12,7 @@ import {
   Receipt,
 } from "lucide-react";
 
+import { StageSelect } from "@/components/bookings/stage-select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -151,7 +152,7 @@ export default async function BookingDetailPage(
             </p>
           </div>
         </div>
-        <StatusBadge status={booking.stage} />
+        <StageSelect id={booking.id} stage={booking.stage} />
       </div>
 
       <div className="grid items-start gap-5 xl:grid-cols-3">
@@ -199,7 +200,7 @@ export default async function BookingDetailPage(
                 href={
                   invoice ? `/dashboard/invoices/${invoice.id}` : undefined
                 }
-                createHref="/dashboard/invoices/new"
+                createHref={`/dashboard/invoices/new?client=${booking.clientId}`}
               />
               <LinkedDoc
                 icon={FileSignature}
@@ -208,7 +209,7 @@ export default async function BookingDetailPage(
                 href={
                   contract ? `/dashboard/contracts/${contract.id}` : undefined
                 }
-                createHref="/dashboard/contracts/new"
+                createHref={`/dashboard/contracts/new?client=${booking.clientId}`}
               />
               <LinkedDoc
                 icon={ClipboardList}
@@ -217,7 +218,7 @@ export default async function BookingDetailPage(
                 href={
                   advance ? `/dashboard/advancing/${advance.id}` : undefined
                 }
-                createHref="/dashboard/advancing/new"
+                createHref={`/dashboard/advancing/new?client=${booking.clientId}`}
               />
             </CardContent>
           </Card>

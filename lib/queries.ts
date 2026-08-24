@@ -31,12 +31,33 @@ function clientLabel(names: Record<string, string>, clientId: string): string {
 
 /* ------------------------------- clients --------------------------------- */
 
+/** Real bookings count + collected revenue (paid invoices) per client. */
+async function clientAggregates(
+  userId: string
+): Promise<Record<string, { bookings: number; revenue: number }>> {
+  const [bookings, invoices] = await Promise.all([
+    prisma.booking.findMany({ where: { userId }, select: { clientId: true } }),
+    prisma.invoice.findMany({
+      where: { userId, status: "paid" },
+      select: { clientId: true, total: true },
+    }),
+  ]);
+  const agg: Record<string, { bookings: number; revenue: number }> = {};
+  for (const b of bookings) (agg[b.clientId] ??= { bookings: 0, revenue: 0 }).bookings++;
+  for (const i of invoices) (agg[i.clientId] ??= { bookings: 0, revenue: 0 }).revenue += i.total;
+  return agg;
+}
+
 export async function getClients(userId: string): Promise<Client[]> {
-  const rows = await prisma.client.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-  });
-  return rows as unknown as Client[];
+  const [rows, agg] = await Promise.all([
+    prisma.client.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
+    clientAggregates(userId),
+  ]);
+  return rows.map((r) => ({
+    ...r,
+    totalBookings: agg[r.id]?.bookings ?? 0,
+    totalBilled: agg[r.id]?.revenue ?? 0,
+  })) as unknown as Client[];
 }
 
 export async function getClientById(
@@ -44,7 +65,19 @@ export async function getClientById(
   id: string
 ): Promise<Client | null> {
   const row = await prisma.client.findFirst({ where: { id, userId } });
-  return (row as unknown as Client) ?? null;
+  if (!row) return null;
+  const [bookings, revenue] = await Promise.all([
+    prisma.booking.count({ where: { userId, clientId: id } }),
+    prisma.invoice.aggregate({
+      where: { userId, clientId: id, status: "paid" },
+      _sum: { total: true },
+    }),
+  ]);
+  return {
+    ...row,
+    totalBookings: bookings,
+    totalBilled: revenue._sum.total ?? 0,
+  } as unknown as Client;
 }
 
 export async function lastBookingByClient(
@@ -239,6 +272,7 @@ function parseAdvance(
   r: {
     eventDetails: string | null;
     campaignDetails: string | null;
+    sectionStates?: string | null;
     clientId: string;
   },
   names: Record<string, string>
@@ -247,6 +281,7 @@ function parseAdvance(
     ...r,
     eventDetails: r.eventDetails ? JSON.parse(r.eventDetails) : undefined,
     campaignDetails: r.campaignDetails ? JSON.parse(r.campaignDetails) : undefined,
+    sectionStates: r.sectionStates ? JSON.parse(r.sectionStates) : null,
     clientName: clientLabel(names, r.clientId),
   } as unknown as AdvanceForm;
 }

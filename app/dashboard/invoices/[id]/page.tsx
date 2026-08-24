@@ -5,9 +5,10 @@ import { ArrowLeft } from "lucide-react";
 
 import { InvoiceActions } from "@/components/invoices/invoice-actions";
 import { InvoiceDocument } from "@/components/invoices/invoice-document";
+import { InvoiceManageActions } from "@/components/invoices/invoice-manage-actions";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
-import { clientDisplayName } from "@/lib/invoices";
+import { balanceFor, clientDisplayName } from "@/lib/invoices";
 import { getClientById, getInvoiceById } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -45,7 +46,15 @@ export default async function InvoiceDetailPage(
             </p>
           </div>
         </div>
-        <InvoiceActions actions={["export", "send"]} />
+        <div className="flex flex-wrap items-center gap-2">
+          <InvoiceManageActions
+            id={invoice.id}
+            balance={balanceFor(invoice)}
+            currency={invoice.currency}
+            paid={invoice.status === "paid"}
+          />
+          <InvoiceActions actions={["export", "send"]} />
+        </div>
       </div>
 
       <InvoiceDocument invoice={invoice} user={user} client={client} />

@@ -30,12 +30,17 @@ export function ContractActions({
   preview,
   disabled = false,
   className,
+  onSubmit,
+  pending = false,
 }: {
   actions?: Action[];
   /** Full-document preview rendered inside the Preview Agreement dialog. */
   preview?: React.ReactNode;
   disabled?: boolean;
   className?: string;
+  /** When provided, Save/Send persist the agreement instead of a fake toast. */
+  onSubmit?: (status: "draft" | "sent") => void;
+  pending?: boolean;
 }) {
   const [done, setDone] = React.useState<Exclude<Action, "preview"> | null>(
     null
@@ -50,7 +55,11 @@ export function ContractActions({
     <div className={cn("space-y-2", className)}>
       <div className="flex flex-wrap gap-2">
         {actions.includes("draft") ? (
-          <Button variant="outline" onClick={() => fire("draft")} disabled={disabled}>
+          <Button
+            variant="outline"
+            onClick={() => (onSubmit ? onSubmit("draft") : fire("draft"))}
+            disabled={disabled || pending}
+          >
             <Save className="size-4" />
             Save Draft
           </Button>
@@ -76,9 +85,12 @@ export function ContractActions({
           </Button>
         ) : null}
         {actions.includes("send") ? (
-          <Button onClick={() => fire("send")} disabled={disabled}>
+          <Button
+            onClick={() => (onSubmit ? onSubmit("sent") : fire("send"))}
+            disabled={disabled || pending}
+          >
             <Send className="size-4" />
-            Send to Client
+            {pending ? "Saving…" : "Send to Client"}
           </Button>
         ) : null}
       </div>

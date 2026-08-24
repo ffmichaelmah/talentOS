@@ -11,10 +11,13 @@ export const metadata: Metadata = {
   title: "New agreement",
 };
 
-export default async function NewContractPage() {
+export default async function NewContractPage(props: {
+  searchParams: Promise<{ client?: string }>;
+}) {
   const user = await requireUser();
   const unlocked = canUseContracts(planForUser(user));
   const clients = unlocked ? await getClients(user.id) : [];
+  const { client } = await props.searchParams;
 
   return (
     <>
@@ -25,6 +28,7 @@ export default async function NewContractPage() {
       {unlocked ? (
         <ContractForm
           clients={clients}
+          defaultClientId={client}
           talent={{
             name: user.name,
             businessName: user.businessName,

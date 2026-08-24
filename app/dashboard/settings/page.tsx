@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/layout/page-header";
+import { ProfileForm } from "@/components/settings/profile-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,14 +11,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { requireUser } from "@/lib/auth";
 import { planForUser } from "@/lib/plan";
 
 export const metadata: Metadata = {
   title: "Settings",
 };
+
+/** First letters of the first two words, e.g. "Mike Zooka" → "MZ". */
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -42,7 +49,7 @@ export default async function SettingsPage() {
           <div className="flex items-center gap-4">
             <Avatar className="size-14">
               <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
-              <AvatarFallback>MR</AvatarFallback>
+              <AvatarFallback>{initials(user.name)}</AvatarFallback>
             </Avatar>
             <div>
               <p className="font-medium">{user.name}</p>
@@ -51,41 +58,7 @@ export default async function SettingsPage() {
               </Badge>
             </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="set-name">Full name</Label>
-              <Input id="set-name" defaultValue={user.name} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="set-stage">Stage / display name</Label>
-              <Input id="set-stage" defaultValue={user.displayName} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="set-email">Email</Label>
-              <Input id="set-email" defaultValue={user.email} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="set-business">Business name</Label>
-              <Input
-                id="set-business"
-                defaultValue={user.businessName ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="set-location">Location</Label>
-              <Input id="set-location" defaultValue={user.location} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="set-currency">Default currency</Label>
-              <Input id="set-currency" defaultValue={user.currency} />
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button>Save changes</Button>
-            <p className="text-xs text-muted-foreground">
-              Prototype — changes aren&apos;t persisted yet.
-            </p>
-          </div>
+          <ProfileForm user={user} />
         </CardContent>
       </Card>
 
@@ -99,7 +72,9 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent>
           <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
-            Custom branding is available on Pro plan.
+            {plan.id === "plan-pro" || plan.id === "plan-agency"
+              ? "Included on your plan — logo upload is coming soon."
+              : "Custom branding is available on the Pro plan."}
           </p>
         </CardContent>
       </Card>

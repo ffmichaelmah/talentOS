@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BadgeCheck, Check, CreditCard, Receipt } from "lucide-react";
 
+import { ChangePlanButton } from "@/components/billing/change-plan-button";
 import {
   CancelSubscriptionButton,
   ResumeSubscriptionButton,
@@ -156,26 +157,20 @@ export default async function BillingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Button
-                    className="mt-auto w-full"
-                    variant={
-                      isCurrent
-                        ? "outline"
-                        : plan.highlighted
-                          ? "default"
-                          : "outline"
-                    }
-                    disabled={isCurrent}
-                  >
-                    {isCurrent ? "Current plan" : plan.cta}
-                  </Button>
+                  <ChangePlanButton
+                    planId={plan.id}
+                    label={plan.cta}
+                    isCurrent={isCurrent}
+                    highlighted={plan.highlighted}
+                  />
                 </CardContent>
               </Card>
             );
           })}
         </div>
         <p className="text-xs text-muted-foreground">
-          Prototype — plan changes and payments aren&apos;t connected yet.
+          Plan changes apply immediately. Payment collection isn&apos;t
+          connected yet — nothing is charged.
         </p>
       </section>
 

@@ -22,11 +22,16 @@ export function InvoiceActions({
   actions = ["draft", "export", "send"],
   disabled = false,
   className,
+  onSubmit,
+  pending = false,
 }: {
   actions?: Action[];
   /** e.g. free-plan invoice limit reached. */
   disabled?: boolean;
   className?: string;
+  /** When provided, Save/Send persist the invoice instead of a fake toast. */
+  onSubmit?: (status: "draft" | "sent") => void;
+  pending?: boolean;
 }) {
   const [done, setDone] = React.useState<Action | null>(null);
 
@@ -39,7 +44,11 @@ export function InvoiceActions({
     <div className={cn("space-y-2", className)}>
       <div className="flex flex-wrap gap-2">
         {actions.includes("draft") ? (
-          <Button variant="outline" onClick={() => fire("draft")}>
+          <Button
+            variant="outline"
+            disabled={pending}
+            onClick={() => (onSubmit ? onSubmit("draft") : fire("draft"))}
+          >
             <Save className="size-4" />
             Save Draft
           </Button>
@@ -51,9 +60,12 @@ export function InvoiceActions({
           </Button>
         ) : null}
         {actions.includes("send") ? (
-          <Button onClick={() => fire("send")} disabled={disabled}>
+          <Button
+            disabled={disabled || pending}
+            onClick={() => (onSubmit ? onSubmit("sent") : fire("send"))}
+          >
             <Send className="size-4" />
-            Send Invoice
+            {pending ? "Saving…" : "Send Invoice"}
           </Button>
         ) : null}
       </div>

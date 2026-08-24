@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { ContractActions } from "@/components/contracts/contract-actions";
+import { ContractStatusActions } from "@/components/contracts/contract-status-actions";
 import {
   ContractDocument,
   contractToView,
@@ -54,7 +55,10 @@ export default async function ContractDetailPage(
             </p>
           </div>
         </div>
-        <ContractActions actions={["export", "send"]} />
+        <div className="flex flex-wrap items-center gap-2">
+          <ContractStatusActions id={contract.id} status={contract.status} />
+          <ContractActions actions={["export", "send"]} />
+        </div>
       </div>
 
       <ContractDocument view={view} />

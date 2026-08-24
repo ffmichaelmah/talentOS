@@ -29,10 +29,17 @@ export function AdvanceActions({
   actions = ["draft", "preview", "send"],
   preview,
   className,
+  onSubmit,
+  pending = false,
+  disabled = false,
 }: {
   actions?: Action[];
   preview?: React.ReactNode;
   className?: string;
+  /** When provided, Save/Send persist the advance instead of a fake toast. */
+  onSubmit?: (status: "draft" | "sent") => void;
+  pending?: boolean;
+  disabled?: boolean;
 }) {
   const [done, setDone] = React.useState<Exclude<Action, "preview"> | null>(
     null
@@ -47,7 +54,11 @@ export function AdvanceActions({
     <div className={cn("space-y-2", className)}>
       <div className="flex flex-wrap gap-2">
         {actions.includes("draft") ? (
-          <Button variant="outline" onClick={() => fire("draft")}>
+          <Button
+            variant="outline"
+            disabled={disabled || pending}
+            onClick={() => (onSubmit ? onSubmit("draft") : fire("draft"))}
+          >
             <Save className="size-4" />
             Save Draft
           </Button>
@@ -73,9 +84,12 @@ export function AdvanceActions({
           </Button>
         ) : null}
         {actions.includes("send") ? (
-          <Button onClick={() => fire("send")}>
+          <Button
+            disabled={disabled || pending}
+            onClick={() => (onSubmit ? onSubmit("sent") : fire("send"))}
+          >
             <Send className="size-4" />
-            Send to Client
+            {pending ? "Saving…" : "Send to Client"}
           </Button>
         ) : null}
       </div>

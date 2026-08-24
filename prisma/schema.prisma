@@ -171,6 +171,7 @@ model AdvanceForm {
   shareEnabled    Boolean @default(false)
   shareViewed     Boolean @default(false)
   clientLocked    Boolean @default(false) // client confirmed; edits locked until reopened
+  sectionStates   String? // JSON { sectionSlug: "complete" | "skipped" } — per-section client status
   eventDetails    String? // JSON: EventAdvanceDetails
   campaignDetails String? // JSON: CampaignAdvanceDetails
   createdAt       String

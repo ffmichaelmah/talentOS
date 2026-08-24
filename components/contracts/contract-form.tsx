@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { createContractAction } from "@/app/actions/contracts";
 import { ContractActions } from "@/components/contracts/contract-actions";
 import {
   ContractDocument,
@@ -71,22 +72,30 @@ function Field({
 export function ContractForm({
   clients,
   talent,
+  defaultClientId,
 }: {
   clients: Client[];
   talent: ContractFormTalent;
+  defaultClientId?: string;
 }) {
+  const initialClient = clients.find((c) => c.id === defaultClientId);
+
   // 1. Contract type
   const [contractType, setContractType] =
     React.useState<ContractType>("dj-booking");
 
-  // 2. Parties
+  // 2. Parties (client preselected when arriving from a client's page)
   const [talentName, setTalentName] = React.useState(
     `${talent.name}${talent.businessName ? ` (${talent.businessName})` : ""}`
   );
-  const [clientName, setClientName] = React.useState("");
-  const [clientCompany, setClientCompany] = React.useState("");
-  const [clientEmail, setClientEmail] = React.useState("");
-  const [clientAddress, setClientAddress] = React.useState("");
+  const [clientName, setClientName] = React.useState(initialClient?.name ?? "");
+  const [clientCompany, setClientCompany] = React.useState(
+    initialClient?.company ?? ""
+  );
+  const [clientEmail, setClientEmail] = React.useState(initialClient?.email ?? "");
+  const [clientAddress, setClientAddress] = React.useState(
+    initialClient?.location ?? ""
+  );
 
   // 3. Job scope
   const [serviceDescription, setServiceDescription] = React.useState("");
@@ -124,12 +133,55 @@ export function ContractForm({
   const balanceAmount = Math.max(feeAmount - depositAmount, 0);
 
   function prefillClient(id: string | null) {
-    const client = clients.find((c) => c.id === id);
-    if (!client) return;
-    setClientName(client.name);
-    setClientCompany(client.company ?? "");
-    setClientEmail(client.email);
-    setClientAddress(client.location ?? "");
+    const client =
+      id && id !== NO_CLIENT ? clients.find((c) => c.id === id) : undefined;
+    setSelectedClientId(client?.id ?? null);
+    // Switching back to "New client" clears the fields — otherwise the
+    // previous client's details would be saved as a brand-new duplicate.
+    setClientName(client?.name ?? "");
+    setClientCompany(client?.company ?? "");
+    setClientEmail(client?.email ?? "");
+    setClientAddress(client?.location ?? "");
+  }
+
+  const [selectedClientId, setSelectedClientId] = React.useState<string | null>(
+    initialClient?.id ?? null
+  );
+  const [pending, startTransition] = React.useTransition();
+  const [error, setError] = React.useState<string | null>(null);
+
+  function save(status: "draft" | "sent") {
+    setError(null);
+    startTransition(async () => {
+      const res = await createContractAction({
+        clientId: selectedClientId ?? undefined,
+        clientName,
+        clientCompany,
+        clientEmail,
+        clientAddress,
+        contractType,
+        talentLegalName: talentName,
+        serviceDescription,
+        deliverables,
+        eventName,
+        dateTime,
+        location,
+        currency,
+        fee: feeAmount,
+        deposit: depositAmount,
+        paymentDeadline,
+        latePaymentTerms,
+        cancellationPolicy,
+        reschedulePolicy,
+        usageRights,
+        exclusivity,
+        travelAccommodation,
+        technicalRider,
+        forceMajeure,
+        status,
+      });
+      if (res?.error) setError(res.error);
+    });
   }
 
   const clientItems: Record<string, string> = {
@@ -219,7 +271,7 @@ export function ContractForm({
               <Field label="Choose existing client" optional>
                 <Select
                   items={clientItems}
-                  defaultValue={NO_CLIENT}
+                  defaultValue={initialClient?.id ?? NO_CLIENT}
                   onValueChange={(v) => prefillClient(v)}
                 >
                   <SelectTrigger className="w-full sm:w-72">
@@ -544,7 +596,14 @@ export function ContractForm({
           </CardContent>
         </Card>
 
-        <ContractActions preview={<ContractDocument view={view} />} />
+        {error ? (
+          <p role="alert" className="text-sm text-destructive">{error}</p>
+        ) : null}
+        <ContractActions
+          preview={<ContractDocument view={view} />}
+          onSubmit={save}
+          pending={pending}
+        />
       </div>
     </div>
   );

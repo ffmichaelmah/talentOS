@@ -47,7 +47,7 @@ const sample: AdvanceForm = {
 export function AdvanceLocked() {
   return (
     <div className="space-y-6">
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-6 py-10 text-center">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-muted px-6 py-10 text-center">
         <span className="flex size-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
           <Lock className="size-6" />
         </span>

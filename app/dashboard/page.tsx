@@ -81,13 +81,23 @@ export default async function DashboardOverviewPage() {
   const pendingInvoices = invoices.filter((i) =>
     ["draft", "sent", "viewed", "overdue"].includes(i.status)
   );
-  const upcomingBookings = bookings.filter((b) =>
-    ["confirmed", "pending"].includes(b.status)
-  );
+  // Upcoming = still open AND in the future, soonest first.
+  const now = new Date();
+  const upcomingBookings = bookings
+    .filter(
+      (b) =>
+        ["confirmed", "pending"].includes(b.status) &&
+        new Date(b.startTime) >= now
+    )
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
   const pendingContracts = contracts.filter((c) =>
     ["draft", "sent"].includes(c.status)
   );
-  const monthlyEarnings = invoices.reduce((sum, i) => sum + i.amountPaid, 0);
+  // Collected in the current calendar month, not all time.
+  const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const monthlyEarnings = invoices
+    .filter((i) => i.issueDate.startsWith(monthPrefix))
+    .reduce((sum, i) => sum + i.amountPaid, 0);
   const recentInvoices = [...invoices]
     .sort((a, b) => b.issueDate.localeCompare(a.issueDate))
     .slice(0, 5);
@@ -214,7 +224,12 @@ export default async function DashboardOverviewPage() {
               {
                 header: "Invoice",
                 cell: (i) => (
-                  <span className="font-medium">{i.invoiceNumber}</span>
+                  <Link
+                    href={`/dashboard/invoices/${i.id}`}
+                    className="font-medium hover:underline"
+                  >
+                    {i.invoiceNumber}
+                  </Link>
                 ),
               },
               { header: "Client", cell: (i) => i.clientName ?? "—" },
@@ -232,6 +247,9 @@ export default async function DashboardOverviewPage() {
             ]}
             rows={recentInvoices}
             rowKey={(i) => i.id}
+            emptyIcon={Receipt}
+            emptyTitle="No invoices yet"
+            emptyDescription="Create your first invoice and it'll show up here."
           />
         </div>
 
@@ -249,9 +267,15 @@ export default async function DashboardOverviewPage() {
           </div>
           <Card className="shadow-xs">
             <CardContent className="space-y-3">
+              {upcomingBookings.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  No upcoming bookings.
+                </p>
+              ) : null}
               {upcomingBookings.slice(0, 4).map((booking) => (
-                <div
+                <Link
                   key={booking.id}
+                  href={`/dashboard/bookings/${booking.id}`}
                   className="flex items-center justify-between gap-3 rounded-lg border border-border/60 p-3 transition-colors hover:bg-muted/40"
                 >
                   <div className="min-w-0">
@@ -263,7 +287,7 @@ export default async function DashboardOverviewPage() {
                     </p>
                   </div>
                   <StatusBadge status={booking.status} />
-                </div>
+                </Link>
               ))}
             </CardContent>
           </Card>

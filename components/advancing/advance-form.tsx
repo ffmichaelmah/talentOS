@@ -38,8 +38,10 @@ import type {
   AdvanceForm as AdvanceFormModel,
   AdvanceFormType,
   CampaignAdvanceDetails,
+  Client,
   EventAdvanceDetails,
 } from "@/types";
+import { createAdvanceAction } from "@/app/actions/advances";
 import { cn } from "@/lib/utils";
 
 /**
@@ -77,15 +79,41 @@ const categoryCards: {
   },
 ];
 
-export function AdvanceForm() {
+export function AdvanceForm({
+  clients,
+  defaultClientId,
+}: {
+  clients: Client[];
+  defaultClientId?: string;
+}) {
   const [category, setCategory] = React.useState<AdvanceCategory>("event");
   const [type, setType] = React.useState<AdvanceFormType>("event-performance");
   const [values, setValues] = React.useState<Record<string, string>>({});
+  const [clientId, setClientId] = React.useState(
+    (defaultClientId && clients.some((c) => c.id === defaultClientId)
+      ? defaultClientId
+      : clients[0]?.id) ?? ""
+  );
+  const [pending, startTransition] = React.useTransition();
+  const [error, setError] = React.useState<string | null>(null);
 
   function chooseCategory(next: AdvanceCategory) {
     setCategory(next);
     setType(typesForCategory(next)[0]);
     setValues({});
+  }
+
+  function save(status: "draft" | "sent") {
+    setError(null);
+    startTransition(async () => {
+      const res = await createAdvanceAction({
+        clientId,
+        type,
+        values,
+        status,
+      });
+      if (res?.error) setError(res.error);
+    });
   }
 
   const sectionsForCategory =
@@ -179,6 +207,27 @@ export function AdvanceForm() {
                   {typesForCategory(category).map((t) => (
                     <SelectItem key={t} value={t}>
                       {ADVANCE_TYPE_LABELS[t]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Client</Label>
+              <Select
+                items={Object.fromEntries(
+                  clients.map((c) => [c.id, c.company ?? c.name])
+                )}
+                value={clientId}
+                onValueChange={(v) => setClientId(v ?? clients[0]?.id ?? "")}
+              >
+                <SelectTrigger className="w-full sm:w-96">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {clients.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.company ?? c.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -328,8 +377,14 @@ export function AdvanceForm() {
           </CardContent>
         </Card>
 
+        {error ? (
+          <p role="alert" className="text-sm text-destructive">{error}</p>
+        ) : null}
         <AdvanceActions
           preview={<AdvanceDocument form={draft} clientName="Your client" />}
+          onSubmit={save}
+          pending={pending}
+          disabled={!clientId}
         />
       </div>
     </div>

@@ -3,7 +3,14 @@
 import { revalidatePath } from "next/cache";
 
 import { requireUser } from "@/lib/auth";
-import { clientEditableKeys } from "@/lib/advance-sections";
+import {
+  clientEditableKeys,
+  lockedKeys,
+  sectionSlug,
+  sectionsFor,
+  type SectionState,
+  type SectionStates,
+} from "@/lib/advance-sections";
 import { prisma } from "@/lib/db";
 import type { AdvanceCategory } from "@/types";
 
@@ -12,12 +19,15 @@ function revalidate(id: string) {
   revalidatePath(`/dashboard/advancing/${id}`);
 }
 
+const detailsFieldFor = (category: AdvanceCategory) =>
+  category === "event" ? "eventDetails" : "campaignDetails";
+
 /**
  * Client (promoter/brand) updates their logistics via the public share link.
- * No auth: the boundary is the share flag + the field whitelist — only keys
- * the client is allowed to edit are applied, so extra keys can't be smuggled
- * in from the browser. ponytail: no rate limit; anyone with the link can edit,
- * which is the share-link model. Add a token + throttle if abused.
+ * No auth: the boundary is the share flag + the field whitelist — only keys the
+ * client is allowed to edit AND that aren't in a completed section are applied,
+ * so extra or locked keys can't be smuggled in from the browser.
+ * ponytail: no rate limit; anyone with the link can edit (the share-link model).
  */
 export async function updateSharedAdvance(
   id: string,
@@ -29,15 +39,18 @@ export async function updateSharedAdvance(
   if (!form || form.clientLocked) return { ok: false };
 
   const category = form.category as AdvanceCategory;
+  const detailsField = detailsFieldFor(category);
+  const states: SectionStates = form.sectionStates
+    ? JSON.parse(form.sectionStates)
+    : {};
   const allowed = clientEditableKeys(category);
-  const detailsField =
-    category === "event" ? "eventDetails" : "campaignDetails";
+  const locked = lockedKeys(category, states);
   const current = form[detailsField]
     ? JSON.parse(form[detailsField] as string)
     : {};
 
   for (const [key, value] of Object.entries(values)) {
-    if (allowed.has(key)) current[key] = value;
+    if (allowed.has(key) && !locked.has(key)) current[key] = value;
   }
 
   await prisma.advanceForm.update({
@@ -49,23 +62,63 @@ export async function updateSharedAdvance(
   return { ok: true };
 }
 
-/** Client's double-confirm: lock the form so it can't be edited via the link
- *  until the artist reopens it. */
-export async function confirmSharedAdvance(id: string): Promise<{ ok: boolean }> {
-  const res = await prisma.advanceForm.updateMany({
-    where: { id, shareEnabled: true, clientLocked: false },
-    data: { clientLocked: true, updatedAt: new Date().toISOString() },
+/**
+ * Client marks a section complete / skipped / open. Completing also saves that
+ * section's current values; only a real client-editable section is accepted.
+ */
+export async function setAdvanceSection(
+  id: string,
+  slug: string,
+  state: SectionState | "open",
+  values: Record<string, string> = {}
+): Promise<{ ok: boolean }> {
+  const form = await prisma.advanceForm.findFirst({
+    where: { id, shareEnabled: true },
   });
+  if (!form || form.clientLocked) return { ok: false };
+
+  const category = form.category as AdvanceCategory;
+  const section = sectionsFor(category).find(
+    (s) => s.clientEditable && sectionSlug(s.title) === slug
+  );
+  if (!section) return { ok: false };
+
+  const detailsField = detailsFieldFor(category);
+  const current = form[detailsField]
+    ? JSON.parse(form[detailsField] as string)
+    : {};
+  // Persist this section's fields alongside the state change.
+  const sectionKeys = new Set(section.fields.map((f) => f.key));
+  for (const [key, value] of Object.entries(values)) {
+    if (sectionKeys.has(key)) current[key] = value;
+  }
+
+  const states: SectionStates = form.sectionStates
+    ? JSON.parse(form.sectionStates)
+    : {};
+  if (state === "open") delete states[slug];
+  else states[slug] = state;
+
+  await prisma.advanceForm.update({
+    where: { id },
+    data: {
+      [detailsField]: JSON.stringify(current),
+      sectionStates: Object.keys(states).length ? JSON.stringify(states) : null,
+      updatedAt: new Date().toISOString(),
+    },
+  });
+
   revalidate(id);
-  return { ok: res.count > 0 };
+  return { ok: true };
 }
 
-/** Artist reopens a locked form so the client can edit again (their new link). */
+/** Artist reopens everything so the client can edit again — clears every
+ *  per-section confirmation and any whole-form lock. */
 export async function reopenAdvanceForClient(id: string): Promise<{ ok: boolean }> {
   const user = await requireUser();
   const res = await prisma.advanceForm.updateMany({
     where: { id, userId: user.id },
-    data: { clientLocked: false },
+    data: { clientLocked: false, sectionStates: null },
   });
   revalidate(id);
   return { ok: res.count > 0 };

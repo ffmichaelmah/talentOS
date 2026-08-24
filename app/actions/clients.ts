@@ -61,3 +61,42 @@ export async function createClientAction(
   revalidatePath("/dashboard/clients");
   redirect("/dashboard/clients");
 }
+
+export async function updateClientAction(
+  id: string,
+  _prev: ClientFormState,
+  formData: FormData
+): Promise<ClientFormState> {
+  const user = await requireUser();
+  const parsed = schema.safeParse({
+    name: str(formData.get("name")),
+    company: str(formData.get("company")),
+    email: str(formData.get("email")),
+    phone: str(formData.get("phone")),
+    type: str(formData.get("type")),
+    taxNumber: str(formData.get("taxNumber")),
+    address: str(formData.get("address")),
+    notes: str(formData.get("notes")),
+  });
+  if (!parsed.success) {
+    return { error: "Please enter at least a client name." };
+  }
+  const d = parsed.data;
+  const res = await prisma.client.updateMany({
+    where: { id, userId: user.id },
+    data: {
+      name: d.name,
+      company: d.company || null,
+      email: d.email || "",
+      phone: d.phone || null,
+      type: d.type || "venue",
+      address: d.address || null,
+      taxNumber: d.taxNumber || null,
+      notes: d.notes || null,
+    },
+  });
+  if (res.count === 0) return { error: "Client not found." };
+  revalidatePath("/dashboard/clients");
+  revalidatePath(`/dashboard/clients/${id}`);
+  redirect(`/dashboard/clients/${id}`);
+}

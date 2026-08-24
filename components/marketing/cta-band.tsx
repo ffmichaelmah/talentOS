@@ -23,7 +23,7 @@ export function CtaBand({
       <div className="relative overflow-hidden rounded-3xl border border-primary/20 px-6 py-16 text-center sm:px-16">
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/15 via-primary/5 to-transparent"
+          className="absolute inset-0 -z-10 bg-muted"
         />
         <div
           aria-hidden

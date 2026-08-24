@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   title: "New invoice",
 };
 
-export default async function NewInvoicePage() {
+export default async function NewInvoicePage(props: {
+  searchParams: Promise<{ client?: string }>;
+}) {
   const user = await requireUser();
   const [clients, monthCount, defaultNumber] = await Promise.all([
     getClients(user.id),
@@ -21,6 +23,7 @@ export default async function NewInvoicePage() {
   ]);
   const plan = planForUser(user);
   const limitReached = isOverInvoiceLimit(plan, monthCount);
+  const { client } = await props.searchParams;
 
   return (
     <>
@@ -40,6 +43,7 @@ export default async function NewInvoicePage() {
       <InvoiceForm
         clients={clients}
         defaultNumber={defaultNumber}
+        defaultClientId={client}
         talent={{
           businessName: user.businessName,
           name: user.name,

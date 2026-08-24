@@ -101,7 +101,7 @@ export default function TemplatesPage() {
                     className="group flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
                   >
                     {/* faux document preview */}
-                    <div className="relative h-36 overflow-hidden border-b border-border/60 bg-gradient-to-br from-muted/60 to-muted/20 p-4">
+                    <div className="relative h-36 overflow-hidden border-b border-border/60 bg-muted p-4">
                       <div className="space-y-1.5">
                         <div className="h-2 w-1/3 rounded bg-foreground/15" />
                         <div className="h-1.5 w-2/3 rounded bg-foreground/10" />

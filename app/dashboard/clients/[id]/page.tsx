@@ -7,6 +7,7 @@ import {
   FileSignature,
   Mail,
   MapPin,
+  Pencil,
   Phone,
   Receipt,
 } from "lucide-react";
@@ -68,17 +69,53 @@ export default async function ClientDetailPage(
 
   return (
     <>
-      <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          nativeButton={false}
-          render={<Link href="/dashboard/clients" />}
-          aria-label="Back to clients"
-        >
-          <ArrowLeft className="size-4" />
-        </Button>
-        <PageHeader title={client.name} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            nativeButton={false}
+            render={<Link href="/dashboard/clients" />}
+            aria-label="Back to clients"
+          >
+            <ArrowLeft className="size-4" />
+          </Button>
+          <PageHeader title={client.name} />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={<Link href={`/dashboard/clients/${id}/edit`} />}
+          >
+            <Pencil className="size-4" /> Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={<Link href={`/dashboard/invoices/new?client=${id}`} />}
+          >
+            <Receipt className="size-4" /> New invoice
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={<Link href={`/dashboard/bookings/new?client=${id}`} />}
+          >
+            <Calendar className="size-4" /> New booking
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            nativeButton={false}
+            render={<Link href={`/dashboard/contracts/new?client=${id}`} />}
+          >
+            <FileSignature className="size-4" /> New agreement
+          </Button>
+        </div>
       </div>
 
       {/* Profile */}
@@ -98,10 +135,24 @@ export default async function ClientDetailPage(
         </CardHeader>
         <CardContent className="grid gap-3 text-sm sm:grid-cols-2">
           <p className="flex items-center gap-2 text-muted-foreground">
-            <Mail className="size-4 shrink-0" /> {client.email}
+            <Mail className="size-4 shrink-0" />{" "}
+            {client.email ? (
+              <a href={`mailto:${client.email}`} className="hover:text-foreground hover:underline">
+                {client.email}
+              </a>
+            ) : (
+              "—"
+            )}
           </p>
           <p className="flex items-center gap-2 text-muted-foreground">
-            <Phone className="size-4 shrink-0" /> {client.phone ?? "—"}
+            <Phone className="size-4 shrink-0" />{" "}
+            {client.phone ? (
+              <a href={`tel:${client.phone}`} className="hover:text-foreground hover:underline">
+                {client.phone}
+              </a>
+            ) : (
+              "—"
+            )}
           </p>
           <p className="flex items-center gap-2 text-muted-foreground sm:col-span-2">
             <MapPin className="size-4 shrink-0" />{" "}

@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
-import { createClientAction } from "@/app/actions/clients";
+import {
+  createClientAction,
+  updateClientAction,
+} from "@/app/actions/clients";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { CLIENT_TYPE_LABELS, CLIENT_TYPES } from "@/lib/clients";
-import type { ClientType } from "@/types";
+import type { Client, ClientType } from "@/types";
 
 function Field({
   label,
@@ -47,22 +50,28 @@ function Field({
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ editing }: { editing: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <button
-      type="submit"
-      className={buttonVariants()}
-      disabled={pending}
-    >
-      {pending ? "Adding…" : "Add client"}
+    <button type="submit" className={buttonVariants()} disabled={pending}>
+      {pending
+        ? "Saving…"
+        : editing
+          ? "Save changes"
+          : "Add client"}
     </button>
   );
 }
 
-export function ClientForm() {
-  const [type, setType] = React.useState<ClientType>("venue");
-  const [state, action] = useActionState(createClientAction, undefined);
+export function ClientForm({ client }: { client?: Client }) {
+  const editing = !!client;
+  const [type, setType] = React.useState<ClientType>(
+    (client?.type as ClientType) ?? "venue"
+  );
+  const [state, action] = useActionState(
+    editing ? updateClientAction.bind(null, client.id) : createClientAction,
+    undefined
+  );
 
   return (
     <form action={action} className="max-w-2xl space-y-5">
@@ -80,12 +89,13 @@ export function ClientForm() {
             </p>
           ) : null}
           <Field label="Client name" id="cl-name">
-            <Input id="cl-name" name="name" placeholder="e.g. Jordan Blake" required />
+            <Input id="cl-name" name="name" defaultValue={client?.name} placeholder="e.g. Jordan Blake" required />
           </Field>
           <Field label="Company" id="cl-company" optional>
             <Input
               id="cl-company"
               name="company"
+              defaultValue={client?.company ?? ""}
               placeholder="e.g. Echoplex Venue Group"
             />
           </Field>
@@ -94,11 +104,12 @@ export function ClientForm() {
               id="cl-email"
               name="email"
               type="email"
+              defaultValue={client?.email ?? ""}
               placeholder="name@company.com"
             />
           </Field>
           <Field label="Phone" id="cl-phone" optional>
-            <Input id="cl-phone" name="phone" placeholder="+1 (555) 000-0000" />
+            <Input id="cl-phone" name="phone" defaultValue={client?.phone ?? ""} placeholder="+1 (555) 000-0000" />
           </Field>
           <Field label="Client type">
             <input type="hidden" name="type" value={type} />
@@ -123,6 +134,7 @@ export function ClientForm() {
             <Input
               id="cl-tax"
               name="taxNumber"
+              defaultValue={client?.taxNumber ?? ""}
               placeholder="EIN / VAT / registration no."
             />
           </Field>
@@ -131,6 +143,7 @@ export function ClientForm() {
               <Input
                 id="cl-address"
                 name="address"
+                defaultValue={client?.address ?? ""}
                 placeholder="Street, city, region, postal code"
               />
             </Field>
@@ -141,6 +154,7 @@ export function ClientForm() {
                 id="cl-notes"
                 name="notes"
                 rows={3}
+                defaultValue={client?.notes ?? ""}
                 placeholder="Booking preferences, payment terms, anything worth remembering."
               />
             </Field>
@@ -149,11 +163,15 @@ export function ClientForm() {
       </Card>
 
       <div className="flex flex-wrap items-center gap-3">
-        <SubmitButton />
+        <SubmitButton editing={editing} />
         <Button
           variant="ghost"
           nativeButton={false}
-          render={<Link href="/dashboard/clients" />}
+          render={
+            <Link
+              href={editing ? `/dashboard/clients/${client.id}` : "/dashboard/clients"}
+            />
+          }
         >
           Cancel
         </Button>

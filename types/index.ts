@@ -414,6 +414,8 @@ export interface AdvanceForm {
   shareViewed?: boolean;
   /** Client confirmed their details; the share link is read-only until reopened. */
   clientLocked?: boolean;
+  /** Per-section client status: { sectionSlug: "complete" | "skipped" }. */
+  sectionStates?: Record<string, "complete" | "skipped"> | null;
   eventDetails?: EventAdvanceDetails;
   campaignDetails?: CampaignAdvanceDetails;
   createdAt: string;
