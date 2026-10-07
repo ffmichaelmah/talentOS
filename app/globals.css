@@ -9,7 +9,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -39,123 +38,121 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  /*
-   * Two radii carry the whole system: 18px on anything interactive
-   * (buttons, inputs, badges) and 24px on containers (cards, panels).
-   * 6px / 10px exist only for small marks and nested chips.
-   */
+  /* Design system: inputs 8px, buttons & icon chips 12px, cards & panels
+     16px, badges / filter pills fully rounded. */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --radius-2xl: 24px;
-  --radius-3xl: 24px;
-  --radius-4xl: 18px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 999px;
+  --font-heading: var(--font-display);
+  /* Inter Tight is already condensed; keep `tracking-tight` gentle. */
+  --tracking-tight: -0.015em;
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  /* Route existing emerald/amber utilities through the brand status hues. */
+  --color-emerald-400: var(--success);
+  --color-emerald-500: var(--success);
+  --color-emerald-600: var(--success);
+  --color-amber-400: var(--warning);
+  --color-amber-500: var(--warning);
+  --color-amber-600: var(--warning);
 }
 
 /*
- * Whisper-quiet neutral elevation. A card is defined by its hairline border
- * first; the shadow only stacks a 1px ring plus a barely-there drop so the
- * surface reads as raised without drama.
+ * Flat surfaces: depth comes from surface layering and hairline borders, not
+ * shadows. The violet glow is reserved for accent moments.
  */
 @theme {
-  --shadow-2xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-xs: 0 0 0 1px rgb(23 23 23 / 0.05), 0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-    0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-2xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 16px 48px rgb(0 0 0 / 0.55);
+  --shadow-2xl: 0 30px 120px -20px rgb(139 124 246 / 0.35);
 }
 
 /*
- * Achromatic by default: a three-tone surface stack (canvas → sidebar → card)
- * carries the layering, hairlines carry the edges, and the only chromatic hue
- * in the system is the ember red reserved for destructive/error states.
+ * TalentOS design system (Claude Design handoff, project/tokens/colors.css).
+ * Dark is the brand theme and the default; the light variant only exists so
+ * the theme toggle keeps working, and carries the same violet accent.
  */
 :root {
-  --font-sans: var(--font-geist-sans);
-  --background: #f5f5f5; /* Canvas */
-  --foreground: #0a0a0a; /* Ink */
-  --card: #ffffff; /* Paper */
-  --card-foreground: #0a0a0a;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-inter-tight), var(--font-inter);
+  --success: #1f9d64;
+  --warning: #b9800f;
+  --background: #f7f7fa;
+  --foreground: #12121a;
+  --card: #ffffff;
+  --card-foreground: #12121a;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  /* Dark-on-light inversion is the primary action treatment. */
-  --primary: #171717; /* Ink Soft */
-  --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #0a0a0a;
-  --muted: #f5f5f5;
-  /*
-   * Spec's Mid Gray is #737373, but that lands at 4.35:1 on the canvas —
-   * under WCAG AA. Darkened one step to clear 4.5:1 on every surface;
-   * visually indistinguishable, and secondary text is used for real content.
-   */
-  --muted-foreground: #6f6f6f;
-  --accent: #f5f5f5;
-  --accent-foreground: #0a0a0a;
-  --destructive: #e7000b; /* Ember — destructive only, never decorative */
-  --border: #e5e5e5; /* Hairline */
-  --input: #e5e5e5;
-  --ring: #0a0a0a;
-  /* Neutral ramp — charts stay inside the achromatic system. */
-  --chart-1: #171717;
-  --chart-2: #404040;
-  --chart-3: #737373;
-  --chart-4: #a3a3a3;
-  --chart-5: #d4d4d4;
-  --radius: 18px;
-  --sidebar: #fafafa; /* Surface Alt — one step off canvas */
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #171717;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f5f5f5;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #0a0a0a;
+  --popover-foreground: #12121a;
+  --primary: #6f5ce8;
+  --primary-foreground: #ffffff;
+  --secondary: #efeff4;
+  --secondary-foreground: #12121a;
+  --muted: #efeff4;
+  --muted-foreground: #5d5d6c;
+  --accent: #ecebfb;
+  --accent-foreground: #12121a;
+  --destructive: #d14a53;
+  --border: #e3e3ea;
+  --input: #e3e3ea;
+  --ring: #8b7cf6;
+  --chart-1: #6f5ce8;
+  --chart-2: #8b7cf6;
+  --chart-3: #a89bfa;
+  --chart-4: #b9800f;
+  --chart-5: #1f9d64;
+  --radius: 12px;
+  --sidebar: #fbfbfd;
+  --sidebar-foreground: #12121a;
+  --sidebar-primary: #6f5ce8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ecebfb;
+  --sidebar-accent-foreground: #6f5ce8;
+  --sidebar-border: #e3e3ea;
+  --sidebar-ring: #8b7cf6;
 }
 
-/*
- * The same achromatic system inverted. The spec is authored light-first; this
- * keeps the existing theme toggle working without reintroducing any hue.
- */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #171717;
-  --card-foreground: #fafafa;
-  --popover: #171717;
-  --popover-foreground: #fafafa;
-  /* Inverted: light fill on dark canvas keeps the tonal-contrast action. */
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
-  --secondary: #262626;
-  --secondary-foreground: #fafafa;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #262626;
-  --accent-foreground: #fafafa;
-  --destructive: #ff5a5f;
-  --border: #ffffff1a;
-  --input: #ffffff26;
-  --ring: #d4d4d4;
-  --chart-1: #fafafa;
-  --chart-2: #d4d4d4;
-  --chart-3: #a3a3a3;
-  --chart-4: #737373;
-  --chart-5: #525252;
-  --sidebar: #121212;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #fafafa;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #262626;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #ffffff1a;
-  --sidebar-ring: #d4d4d4;
+  --success: #3ecf8e;
+  --warning: #e8b04b;
+  --background: #0e0e14; /* app canvas */
+  --foreground: #f2f2f7;
+  --card: #16161f; /* card surface */
+  --card-foreground: #f2f2f7;
+  --popover: #1c1c27;
+  --popover-foreground: #f2f2f7;
+  --primary: #8b7cf6; /* electric violet */
+  --primary-foreground: #ffffff;
+  --secondary: #1c1c27;
+  --secondary-foreground: #f2f2f7;
+  --muted: #1c1c27; /* hover / nested surface */
+  --muted-foreground: #a7a7b4;
+  --accent: rgb(139 124 246 / 0.14); /* icon chips, active nav */
+  --accent-foreground: #a89bfa;
+  --destructive: #e5646c;
+  --border: #23232e;
+  --input: #2e2e3c;
+  --ring: #8b7cf6;
+  --chart-1: #8b7cf6;
+  --chart-2: #a89bfa;
+  --chart-3: #6f5ce8;
+  --chart-4: #e8b04b;
+  --chart-5: #3ecf8e;
+  --sidebar: #12121a;
+  --sidebar-foreground: #f2f2f7;
+  --sidebar-primary: #8b7cf6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(139 124 246 / 0.14);
+  --sidebar-accent-foreground: #a89bfa;
+  --sidebar-border: #23232e;
+  --sidebar-ring: #8b7cf6;
 }
 
 @layer base {
@@ -166,32 +163,18 @@
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    /* Geist's alternate glyphs — the developer-tool letterforms. */
-    font-feature-settings: "ss01" on, "cv11" on;
   }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
   }
 
-  /*
-   * Tracking tightens as type scales up — aggressively at display sizes —
-   * which is what gives the headings their engineered rather than editorial
-   * voice. Applied by rendered size so it holds wherever the class lands.
-   */
+  /* Headlines: Inter Tight, set tight (-0.02em). */
   h1,
   h2,
   h3 {
-    letter-spacing: -0.025em;
-  }
-  .text-3xl,
-  .text-4xl {
-    letter-spacing: -0.03em;
-  }
-  .text-5xl,
-  .text-6xl,
-  .text-7xl {
-    letter-spacing: -0.05em;
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 
   /* Brand-tinted text selection. */

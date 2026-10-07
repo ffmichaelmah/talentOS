@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Inter_Tight } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+});
+
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -21,7 +27,8 @@ export const metadata: Metadata = {
     "Invoices, contracts, booking advances, and payment tracking for DJs, creators, performers, and the people who manage them — no agent or admin team required.",
 };
 
-const themeInitScript = `try{if(localStorage.getItem("talentos-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
+// Dark is the brand default; only an explicit "light" choice opts out.
+const themeInitScript = `try{if(localStorage.getItem("talentos-theme")==="light")document.documentElement.classList.remove("dark")}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -31,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${inter.variable} ${interTight.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

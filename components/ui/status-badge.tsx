@@ -47,12 +47,10 @@ const labels: Record<string, string> = {
 };
 
 const toneClasses: Record<Tone, string> = {
-  success:
-    "bg-emerald-500/10 text-emerald-600 ring-emerald-500/20 dark:text-emerald-400",
-  info: "bg-primary/10 text-primary ring-primary/20",
-  warning:
-    "bg-amber-500/10 text-amber-600 ring-amber-500/20 dark:text-amber-400",
-  danger: "bg-destructive/10 text-destructive ring-destructive/20",
+  success: "bg-success/14 text-success ring-success/30",
+  info: "bg-primary/14 text-accent-foreground ring-primary/30",
+  warning: "bg-warning/14 text-warning ring-warning/30",
+  danger: "bg-destructive/14 text-destructive ring-destructive/30",
   neutral: "bg-muted text-muted-foreground ring-border",
 };
 

@@ -28,7 +28,7 @@ export function ThemeToggle() {
   const isDark = React.useSyncExternalStore(
     subscribe,
     getSnapshot,
-    () => false // server snapshot: matches the pre-hydration default
+    () => true // server snapshot: dark is the default theme
   );
 
   function toggle() {
