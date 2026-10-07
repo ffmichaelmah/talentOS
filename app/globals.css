@@ -47,9 +47,7 @@
   --radius-2xl: 16px;
   --radius-3xl: 20px;
   --radius-4xl: 999px;
-  --font-heading: var(--font-display);
-  /* Inter Tight is already condensed; keep `tracking-tight` gentle. */
-  --tracking-tight: -0.015em;
+  --font-heading: var(--font-sans);
   --color-success: var(--success);
   --color-warning: var(--warning);
   /* Route existing emerald/amber utilities through the brand status hues. */
@@ -81,8 +79,8 @@
  * the theme toggle keeps working, and carries the same violet accent.
  */
 :root {
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-inter-tight), var(--font-inter);
+  /* Geist — the typeface the product screenshots were set in. */
+  --font-sans: var(--font-geist-sans);
   --success: #1f9d64;
   --warning: #b9800f;
   --background: #f7f7fa;
@@ -169,12 +167,16 @@
     scroll-behavior: smooth;
   }
 
-  /* Headlines: Inter Tight, set tight (-0.02em). */
+  /* Headlines are set tight, a touch tighter at display sizes. */
   h1,
   h2,
   h3 {
-    font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+  }
+  .text-5xl,
+  .text-6xl,
+  .text-7xl {
+    letter-spacing: -0.03em;
   }
 
   /* Brand-tinted text selection. */
