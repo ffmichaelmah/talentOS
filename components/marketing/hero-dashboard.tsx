@@ -54,14 +54,14 @@ export function HeroDashboard() {
     <div className="relative">
       <div
         aria-hidden
-        className="absolute -inset-x-8 -top-8 bottom-0 -z-10 rounded-[2rem] bg-muted blur-2xl"
+        className="absolute -inset-x-8 -top-8 bottom-0 -z-10 rounded-[2rem] bg-gradient-to-tr from-primary/20 via-primary/5 to-transparent blur-2xl"
       />
       <div className="overflow-hidden rounded-2xl border border-border/70 bg-card shadow-2xl shadow-primary/10 ring-1 ring-foreground/5">
         {/* window chrome */}
         <div className="flex items-center gap-2 border-b border-border/60 bg-muted/40 px-4 py-3">
-          <span className="size-3 rounded-full bg-foreground/15" />
-          <span className="size-3 rounded-full bg-foreground/15" />
-          <span className="size-3 rounded-full bg-foreground/15" />
+          <span className="size-3 rounded-full bg-destructive/40" />
+          <span className="size-3 rounded-full bg-chart-4/50" />
+          <span className="size-3 rounded-full bg-primary/40" />
           <div className="ml-3 hidden h-5 w-64 items-center rounded-md bg-background/60 px-2 text-[10px] text-muted-foreground sm:flex">
             app.talentos.com/dashboard
           </div>
@@ -141,7 +141,7 @@ export function HeroDashboard() {
                   {[40, 55, 35, 70, 50, 85, 65, 95, 75, 88].map((h, i) => (
                     <div
                       key={i}
-                      className="flex-1 rounded-t bg-foreground"
+                      className="flex-1 rounded-t bg-gradient-to-t from-primary/30 to-primary"
                       style={{ height: `${h}%` }}
                     />
                   ))}

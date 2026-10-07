@@ -20,7 +20,7 @@ export default function AuthLayout({
       <div className="relative hidden overflow-hidden bg-primary lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div
           aria-hidden
-          className="absolute inset-0 bg-foreground"
+          className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/70"
         />
         <div
           aria-hidden

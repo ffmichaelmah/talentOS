@@ -21,7 +21,8 @@ export const metadata: Metadata = {
     "Invoices, contracts, booking advances, and payment tracking for DJs, creators, performers, and the people who manage them — no agent or admin team required.",
 };
 
-const themeInitScript = `try{if(localStorage.getItem("talentos-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
+// Dark is the brand default; only an explicit "light" choice opts out.
+const themeInitScript = `try{if(localStorage.getItem("talentos-theme")==="light")document.documentElement.classList.remove("dark")}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -31,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

@@ -110,6 +110,10 @@ export default function LandingPage() {
       <section className="relative overflow-hidden">
         <div
           aria-hidden
+          className="absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_0%,color-mix(in_oklch,var(--primary)_12%,transparent),transparent_70%)]"
+        />
+        <div
+          aria-hidden
           className="absolute -top-32 left-1/2 -z-10 size-[40rem] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
         />
         <div className="mx-auto max-w-6xl px-6 pt-20 pb-12 text-center sm:pt-28">
@@ -216,7 +220,7 @@ export default function LandingPage() {
                 key={type.label}
                 className="flex flex-col items-center gap-3 rounded-2xl border border-border/60 bg-card p-6 text-center transition-colors hover:border-primary/30"
               >
-                <span className="flex size-12 items-center justify-center rounded-2xl bg-muted text-primary">
+                <span className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 text-primary">
                   <type.icon className="size-6" />
                 </span>
                 <span className="text-sm font-medium">{type.label}</span>
